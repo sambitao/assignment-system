@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment Interruption </title>
+    <title>Assignment System (V.60 Dual-Axis Dashboard)</title>
     
     <!-- CSS & Libs -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,20 +102,23 @@
                 </div>
             </div>
         </nav>
-        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption Team </p></div>
+        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment</p></div>
     </aside>
     
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-gray-50">
-        <header class="bg-white shadow-sm h-16 flex-none flex items-center justify-between px-4 lg:px-8 z-10 border-b border-gray-200">
+    <!-- UPDATED: Enable vertical scroll on mobile (overflow-y-auto) but keep hidden on large screens (lg:overflow-hidden) -->
+    <main class="flex-1 flex flex-col h-full relative overflow-y-auto lg:overflow-hidden bg-gray-50">
+        <header class="bg-white shadow-sm h-16 flex-none flex items-center justify-between px-4 lg:px-8 z-10 border-b border-gray-200 sticky top-0 lg:static">
             <div class="flex items-center"><button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-brand-600 mr-4 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button><h2 id="page-title" class="text-xl font-bold text-gray-800"><span class="text-brand-500 mr-2">|</span> ปฏิทินงาน</h2></div>
             <div class="flex items-center space-x-4"><div class="flex flex-col items-end"><div id="db-status" class="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 flex items-center cursor-pointer hover:bg-gray-200 transition" onclick="testConnection()"><span class="indicator loading" id="status-dot"></span> <span id="status-text" class="font-medium">Connecting...</span></div></div><div class="h-10 w-10 bg-gradient-to-br from-brand-100 to-orange-200 rounded-full flex items-center justify-center text-brand-600 shadow-sm border border-white"><i class="fa-regular fa-user"></i></div></div>
         </header>
         
-        <div id="content-container" class="flex-1 flex flex-col overflow-hidden relative p-4 lg:p-6 bg-gray-50">
+        <!-- UPDATED: Content container allows overflow on mobile -->
+        <div id="content-container" class="flex-1 flex flex-col overflow-visible lg:overflow-hidden relative p-4 lg:p-6 bg-gray-50 min-h-0 h-auto lg:h-full">
             
             <!-- VIEW: DASHBOARD (MAIN) -->
-            <div id="view-dashboard-analytics" class="view-section flex-1 flex flex-col overflow-auto h-full hidden">
+            <!-- UPDATED: Visible overflow on mobile -->
+            <div id="view-dashboard-analytics" class="view-section flex-1 flex flex-col overflow-visible lg:overflow-auto h-auto lg:h-full hidden">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">เลือกหมวดงาน</label><select id="dash-filter-category" onchange="renderDashboardCharts()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"><option value="all">ทั้งหมด</option><option value="plan_interruption">Interruption Plan</option><option value="team">Interruption Team</option><option value="sub_preventive">Preventive</option><option value="sub_reroute">Reroute</option><option value="sub_reconfigure">Reconfigure</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา</label><div class="flex gap-2"><input type="date" id="dash-date-start" onchange="renderDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="dash-date-end" onchange="renderDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
@@ -138,7 +141,8 @@
             </div>
 
             <!-- VIEW: SUBCONTRACTOR DASHBOARD (COST ADDED) -->
-            <div id="view-sub-dashboard" class="view-section hidden flex-1 flex flex-col overflow-auto h-full">
+            <!-- UPDATED: Visible overflow on mobile -->
+            <div id="view-sub-dashboard" class="view-section hidden flex-1 flex flex-col overflow-visible lg:overflow-auto h-auto lg:h-full">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
                      <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">หมวดงาน Subcontractor</label><select id="sub-filter-category" onchange="renderSubDashboardCharts()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"><option value="all">ทั้งหมด (All Sub)</option><option value="sub_preventive">Preventive</option><option value="sub_reroute">Reroute</option><option value="sub_reconfigure">Reconfigure</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา</label><div class="flex gap-2"><input type="date" id="sub-date-start" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="sub-date-end" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
@@ -173,8 +177,9 @@
             </div>
 
             <!-- VIEW: CALENDAR -->
-            <div id="view-calendar" class="view-section hidden flex-1 flex flex-col overflow-hidden">
-                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200 h-full flex flex-col overflow-hidden">
+            <!-- UPDATED: Visible overflow on mobile, fixed min-height for visibility -->
+            <div id="view-calendar" class="view-section hidden flex-1 flex flex-col overflow-visible lg:overflow-hidden h-auto lg:h-full">
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200 h-[600px] lg:h-full flex flex-col overflow-hidden">
                      <div class="flex flex-col md:flex-row justify-between items-center mb-6 flex-none"><div class="flex items-center space-x-4"><button onclick="changeMonth(-1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition"><i class="fa-solid fa-chevron-left"></i></button><h2 id="calendar-month-year" class="text-2xl font-bold text-gray-800 w-48 text-center"></h2><button onclick="changeMonth(1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition"><i class="fa-solid fa-chevron-right"></i></button></div><button onclick="jumpToToday()" class="px-5 py-2 bg-brand-500 text-white rounded-lg text-sm hover:bg-brand-600 shadow-md hover:shadow-lg transition font-medium">วันนี้ (Today)</button></div>
                     <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-500 text-sm flex-none uppercase tracking-wide"><div class="text-red-500">อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div class="text-brand-500">ส</div></div>
                     <div id="calendar-days" class="grid grid-cols-7 gap-2 flex-1 overflow-y-auto pr-1"></div>
@@ -182,7 +187,8 @@
             </div>
             
             <!-- VIEW: DATA TABLE -->
-            <div id="view-datatable" class="view-section hidden flex-1 flex flex-col overflow-hidden">
+            <!-- UPDATED: Visible overflow on mobile -->
+            <div id="view-datatable" class="view-section hidden flex-1 flex flex-col overflow-visible lg:overflow-hidden h-auto lg:h-full">
                 <!-- Mini Dashboard Sub with MONEY -->
                 <div id="sub-dashboard" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 hidden mb-4 flex-none transition-all">
                     <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-blue-500"><p class="text-[10px] text-gray-500 uppercase font-bold tracking-wide">New Job</p><h3 id="sub-count-new" class="text-xl font-bold text-blue-600">0</h3><p class="text-[10px] text-gray-400 mt-1" id="sub-cost-new">0 ฿</p></div>
@@ -200,7 +206,8 @@
                     <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-red-500 flex justify-between"><div><p class="text-xs text-gray-500 uppercase font-bold">Job Cancel</p><h3 id="team-count-cancel" class="text-2xl font-bold text-red-600">0</h3></div><i class="fa-solid fa-ban text-red-100 text-3xl"></i></div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
+                <!-- UPDATED: Table container auto height on mobile to show content -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex-none lg:flex-1 flex flex-col overflow-hidden h-auto lg:h-full">
                     <div class="p-6 flex-none border-b border-gray-100">
                         <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
                             <div class="flex items-center">
@@ -694,7 +701,7 @@
                     }
 
                     // Map GPS and Due Date (Unified)
-                    $('#form-gps').val(item.gps);
+                    $('#form-gps-sub').val(item.gps); $('#form-gps-team').val(item.gps); $('#form-gps-plan').val(item.gps);
                     if(conf.isSub) $('#form-due-date-sub').val(item.dueDate);
                     
                     if(item.fileName) { $('#file-name-display').text(item.fileName); }
@@ -865,7 +872,8 @@
                 remark: $('#form-remark').val() || '',
                 nsRespond: $('#form-ns-respond').val() || [],
                 // GPS Unified Logic
-                gps: $('#form-gps').val() || ''
+                // GPS Unified Logic
+gps: $('#form-gps').val() || ''
             };
 
             if (config.isSub) {
