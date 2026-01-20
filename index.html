@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment System </title>
+    <title>Assignment Interruption </title>
     
     <!-- CSS & Libs -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -141,8 +141,8 @@
             </div>
 
             <!-- VIEW: SUBCONTRACTOR DASHBOARD (COST ADDED) -->
-            <!-- UPDATED: Visible overflow on mobile -->
-            <div id="view-sub-dashboard" class="view-section hidden flex-1 flex flex-col overflow-visible lg:overflow-auto h-auto lg:h-full">
+            <!-- UPDATED: Removed flex to ensure scroll height is calculated correctly, increased padding significantly -->
+            <div id="view-sub-dashboard" class="view-section hidden w-full h-auto lg:h-full lg:overflow-y-auto overflow-visible pb-40">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
                      <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">หมวดงาน Subcontractor</label><select id="sub-filter-category" onchange="renderSubDashboardCharts()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"><option value="all">ทั้งหมด (All Sub)</option><option value="sub_preventive">Preventive</option><option value="sub_reroute">Reroute</option><option value="sub_reconfigure">Reconfigure</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา</label><div class="flex gap-2"><input type="date" id="sub-date-start" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="sub-date-end" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
@@ -173,7 +173,8 @@
                     <div class="p-4 border-b border-gray-100 bg-gray-50"><h4 class="font-bold text-gray-700">สรุปผลงานผู้รับเหมา (Subcontractor Performance Summary)</h4></div>
                     <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-100 text-gray-600 uppercase text-xs"><tr><th class="p-3">ชื่อผู้รับเหมา (Name)</th><th class="p-3 text-center">จำนวนงานรวม</th><th class="p-3 text-center">เสร็จสิ้น (Finish)</th><th class="p-3 text-right">ค่าใช้จ่ายรวม (Total Cost)</th></tr></thead><tbody id="table-sub-summary" class="divide-y divide-gray-100"></tbody></table></div>
                 </div>
-                <div class="h-12"></div>
+                <!-- Extra spacer to ensure scrolling reaches bottom -->
+                <div class="h-24 w-full"></div>
             </div>
 
             <!-- VIEW: CALENDAR -->
