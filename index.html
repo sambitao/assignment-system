@@ -431,7 +431,45 @@
                         <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6"><h3 class="text-2xl font-bold text-gray-800 flex items-center" id="modal-title"><span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3"><i class="fa-solid fa-pen-to-square"></i></span> บันทึกงานใหม่</h3><span id="display-internal-id" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm font-mono font-bold border border-gray-200">Auto ID</span></div>
                         <input type="hidden" id="doc-id" name="docId"><input type="hidden" id="form-internal-id" name="internalId"><input type="hidden" id="form-category" name="category"><input type="hidden" id="form-file-url" name="fileUrl"><input type="hidden" id="form-file-name" name="fileName">
                         
-                        <div class="group-sub hidden mb-6"><div class="rr-box flex justify-between items-center bg-orange-50 border border-orange-200 rounded-xl p-4"><div><p class="rr-label text-gray-500 text-xs font-bold uppercase mb-1">ทีมก่อนหน้า (Previous)</p><div class="flex flex-col"><p class="text-xl font-bold text-gray-400 mr-2" id="rr-prev-name">-</p><p class="text-xs text-gray-400 truncate max-w-[200px]" id="rr-prev-job">Job: -</p></div></div><div class="text-right"><p class="rr-label text-brand-600 text-xs font-bold uppercase mb-1">ทีมที่ได้รับงานนี้ (Current)</p><p class="text-4xl font-extrabold text-brand-600" id="rr-next-name">-</p><input type="hidden" id="form-sub-name"><div class="mt-3 flex justify-end gap-2"><button type="button" onclick="skipRoundRobin()" class="text-xs bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fa-solid fa-forward mr-1"></i> ข้าม (Skip)</button><button type="button" onclick="resetRoundRobin()" class="text-xs bg-white border border-red-200 hover:bg-red-50 text-red-600 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fa-solid fa-rotate-left mr-1"></i> เริ่มใหม่ (Reset)</button></div></div></div></div>
+                        <!-- แก้ไข HTML: ปรับปรุงส่วน Round Robin ให้รองรับ Special Job -->
+                        <div class="group-sub hidden mb-6">
+                            <div class="rr-box border border-orange-200 rounded-xl p-4 bg-orange-50 mb-6 shadow-sm relative">
+                                <!-- ส่วนแสดงผล Round Robin ปกติ -->
+                                <div id="rr-normal-view">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="rr-label text-gray-500 text-xs font-bold uppercase mb-1">ทีมก่อนหน้า (Previous)</p>
+                                            <div class="flex flex-col">
+                                                <p class="text-xl font-bold text-gray-400 mr-2" id="rr-prev-name">-</p>
+                                                <p class="text-xs text-gray-400 truncate max-w-[200px]" id="rr-prev-job">Job: -</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="rr-label text-brand-600 text-xs font-bold uppercase mb-1">ทีมที่ได้รับงานนี้ (Current)</p>
+                                            <p class="text-4xl font-extrabold text-brand-600" id="rr-next-name">-</p>
+                                            <div class="mt-3 flex justify-end gap-2" id="rr-action-buttons">
+                                                <button type="button" onclick="skipRoundRobin()" class="text-xs bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fa-solid fa-forward mr-1"></i> ข้าม (Skip)</button>
+                                                <button type="button" onclick="resetRoundRobin()" class="text-xs bg-white border border-red-200 hover:bg-red-50 text-red-600 px-3 py-1.5 rounded-lg shadow-sm transition"><i class="fa-solid fa-rotate-left mr-1"></i> เริ่มใหม่ (Reset)</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ส่วนแสดงผลสำหรับ Special Job (เลือกเอง) -->
+                                <div id="rr-special-view" class="hidden">
+                                    <label class="block text-sm font-bold text-brand-700 mb-2 flex items-center">
+                                        <i class="fa-solid fa-star text-yellow-500 mr-2"></i> เลือกผู้รับเหมา (Special Job)
+                                    </label>
+                                    <select id="form-manual-sub" class="w-full border border-orange-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white" onchange="$('#form-sub-name').val(this.value)">
+                                        <option value="">เลือกผู้รับเหมา...</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-2">* งาน Special Job จะไม่ถูกนำไปคำนวณในระบบวนคิว (Round Robin)</p>
+                                </div>
+
+                                <!-- Hidden Input เก็บค่าผู้รับเหมาจริงที่จะบันทึก -->
+                                <input type="hidden" id="form-sub-name">
+                            </div>
+                        </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             <div class="plan-only hidden"><label>Interruption ID - CM</label><input type="text" id="form-interruption-id-cm" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm"></div>
@@ -513,19 +551,16 @@
 
     <script>
         // === GLOBAL SETUP ===
-       // const firebaseConfig = JSON.parse(__firebase_config);
-       // const appId = typeof __app_id !== 'undefined' ? __app_id : 'assignment-app';
-	     const firebaseConfig = {
-  apiKey: "AIzaSyBY0ZewKLp8MJbkq2xxcQ2Z_cz7p04e0EY",
-  authDomain: "assignment-interruption-final.firebaseapp.com",
-  projectId: "assignment-interruption-final",
-  storageBucket: "assignment-interruption-final.firebasestorage.app",
-  messagingSenderId: "578868197362",
-  appId: "1:578868197362:web:09649a591443922fe69d6b"
-};
-        
-        // อย่าลืมประกาศตัวแปร appId สำหรับใช้ใน Firestore Path ด้วยครับ (ตั้งชื่ออะไรก็ได้)
-        const appId = 'assignment-app'; 
+         const firebaseConfig = {
+			   apiKey: "AIzaSyBY0ZewKLp8MJbkq2xxcQ2Z_cz7p04e0EY",
+			   authDomain: "assignment-interruption-final.firebaseapp.com",
+			   projectId: "assignment-interruption-final",
+			   storageBucket: "assignment-interruption-final.firebasestorage.app",
+			   messagingSenderId: "578868197362",
+			   appId: "1:578868197362:web:09649a591443922fe69d6b"
+				};
+				
+		const appId = 'assignment-app'; 
 
         let auth, db; 
         try { 
@@ -551,7 +586,7 @@
         let charts = {};
 
         const CONST_DATA = { 
-            projects: [ "MEA", "PEA", "NBTC", "Sky Train", "Bangkok Metropolis", "BTS", "MRT", "NT", "Customer", "Department Of Highways", "Department Of Rural Road", "Landlord", "Local Authorty", "Motorway", "State Railway OF Thailand", "Underground", "MOI", "Noah", "DWDM", "OLT and ONU", "Site Relocation", "Fiber Infra Sharing", "Improvement", "Other" ], 
+            projects: [ "MEA", "PEA", "NBTC", "Sky Train", "Bangkok Metropolis", "BTS", "MRT", "NT", "Customer", "Department Of Highways", "Department Of Rural Road", "Landlord", "Local Authorty", "Motorway", "State Railway OF Thailand", "Underground", "MOI", "Noah", "DWDM", "OLT and ONU", "Site Relocation", "Fiber Infra Sharing", "Improvement","Migration", "Other" ], 
             agencies: [ "MEA", "PEA", "NBTC", "Sky Train", "NPD", "SQM", "Region", "NOC", "SQI", "ROW", "Landlord", "TPD", "Customer", "Bangkok Metropolis", "BTS", "MRT", "NT", "Motorway", "Department Of Highways", "Department Of Rural Road", "Other" ],
             teamRequests: [ "NOC", "HelpDesk", "TPD", "NPD", "SQM", "SQI", "Sale", "Region BKK", "Cores Network", "Landlord", "SDM", "Region Provincial", "ROW", "Other" ], 
             sideCounts: ["1 ฝั่ง", "2 ฝั่ง"],
@@ -559,16 +594,17 @@
                 team: ["Improvement", "Create Route", "Meeting", "Team Daily", "Support", "Other"], 
                 plan: ["Interruption OFC", "Interruption Equipment", "Information", "Other"], 
                 summary_plan: ["MEA", "PEA", "Underground", "Other"],
-                preventive: ["Preventive มัดรวบสาย", "Preventive ย้ายแนวสาย", "Preventive เข้าคอนใหม่", "Preventive ติดสติ๊กเกอร์", "Preventive รื้อถอนสายตาย", "Preventive Stand by", "Preventive ทำความสะอาดSite", "Other"], 
-                reroute: ["Reroute Project", "Underground", "MOI", "Reconfig for Reroute", "Other"], 
-                reconfigure: ["Reconfig high loss", "Reconfig New Route", "Other"] 
+                // แก้ไข: เพิ่ม "Special Job" ในรายการ
+                preventive: ["Preventive มัดรวบสาย", "Preventive ย้ายแนวสาย", "Preventive เข้าคอนใหม่", "Preventive ติดสติ๊กเกอร์", "Preventive รื้อถอนสายตาย", "Preventive Stand by", "Preventive ทำความสะอาดSite", "Special Job", "Other"], 
+                reroute: ["Reroute Project", "Underground", "MOI", "Reconfig for Reroute", "Special Job", "Other"], 
+                reconfigure: ["Reconfig high loss", "Reconfig New Route", "Special Job", "Other"] 
             } 
         };
         const menuConfig = { 'plan_interruption': { title: 'Interruption Plan', isSub: false, isPlan: true, prefix: 'IP', jobTypeKey: 'plan', sheetName: 'Interruption Plan' }, 'summary_plan': { title: 'Summary Plan', isSub: false, isPlan: true, prefix: 'Sum', jobTypeKey: 'summary_plan', sheetName: 'Summary Plan' }, 'team': { title: 'Assignment Interruption Team', isSub: false, prefix: 'AI', jobTypeKey: 'team', sheetName: 'Interruption Team' }, 'sub_preventive': { title: 'Assignment Preventive', isSub: true, prefix: 'PVT', jobTypeKey: 'preventive', sheetName: 'Assignment Preventive' }, 'sub_reroute': { title: 'Assignment Reroute', isSub: true, prefix: 'RER', jobTypeKey: 'reroute', sheetName: 'Assignment Reroute' }, 'sub_reconfigure': { title: 'Assignment Reconfigure', isSub: true, prefix: 'REF', jobTypeKey: 'reconfigure', sheetName: 'Assignment Reconfigure' }, 'dashboard_analytics': { title: 'Dashboard Analytics', isSub: false, isPlan: false, prefix: 'DB', jobTypeKey: 'team' }, 'sub_dashboard': { title: 'Dashboard Subcontractor', isSub: false, isPlan: false, prefix: 'DBS', jobTypeKey: 'preventive' } };
 
-        function getAssignmentsRef() { return db ? db.collection('assignments') : null; }
+		function getAssignmentsRef() { return db ? db.collection('assignments') : null; }
         function getSettingsRef() { return db ? db.collection('settings').doc('masterData') : null; }
-        
+      
         function fmtDate(s, d) { if(!s) return '-'; let dt; if(s.seconds) dt = new Date(s.seconds*1000); else dt=new Date(s); if(isNaN(dt.getTime())) return '-'; const day=dt.getDate(), m=dt.getMonth()+1, y=dt.getFullYear()+543, h=String(dt.getHours()).padStart(2,'0'), mn=String(dt.getMinutes()).padStart(2,'0'); return d ? `${day}/${m}/${y}` : `${day}/${m}/${y} ${h}:${mn}`; }
         function extractNS(d) { const a=Array.isArray(d)?d:(d?[d]:[]); const names=[], phones=[]; a.forEach(s=>{ if(s.includes(' - ')){ const p=s.split(' - '); names.push(p[0]); phones.push(p[1]); } else { names.push(s); } }); return {names:names.join(', '), phones:phones.join(', ') || '-'}; }
         function extractGPS(g) { const lines = (g||'').split('\n'); return {start: lines[0]||'-', end: lines[1]||'-'}; }
@@ -583,8 +619,10 @@
             for(let i=0; i<f; i++) c.appendChild(document.createElement("div"));
             for(let i=1; i<=d; i++) {
                 const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-               // แก้ไข: เพิ่ม && a.category !== 'summary_plan' เพื่อไม่ให้แสดงงานของ Summary Plan ในปฏิทิน
+                
+                // แก้ไข: เพิ่ม && a.category !== 'summary_plan' เพื่อไม่ให้แสดงงานของ Summary Plan ในปฏิทิน
                 const jobs = assignments.filter(a => (a.actionDate||'').startsWith(ds) && a.status!=='new' && a.status!=='cancel' && a.jobType!=='Team Daily' && a.category !== 'summary_plan').sort((a,b) => (a.actionDate||'').localeCompare(b.actionDate||''));
+                
                 const el = document.createElement("div"); el.className = "calendar-day relative h-24 border rounded-xl p-1 bg-white hover:bg-gray-50 overflow-hidden";
                 let h = ''; 
                 jobs.forEach(j => { 
@@ -950,6 +988,11 @@
             $('.group-sub, .plan-only, .team-only, .not-plan-only, .summary-plan-only').addClass('hidden');
             $('.summary-plan-hide').removeClass('hidden'); 
             
+            // Reset Special Job View
+            $('#rr-normal-view').removeClass('hidden');
+            $('#rr-special-view').addClass('hidden');
+            $('#form-manual-sub').empty().append('<option value="">เลือกผู้รับเหมา...</option>');
+
             if(targetCat === 'summary_plan') {
                 $('#form-agency').removeAttr('required');
                 $('#label-agency').html('Agency Inf.'); 
@@ -963,8 +1006,17 @@
             if(conf.isSub) { 
                 $('.group-sub').removeClass('hidden'); 
                 $('.not-plan-only').removeClass('hidden'); 
-                $('.rr-box button').show(); 
-                fetchRoundRobinState(); 
+                
+                // Populate manual sub list for Special Job
+                const subs = masterData.subcontractors || masterData.Subcontractors || [];
+                subs.forEach(s => $('#form-manual-sub').append(new Option(s, s)));
+
+                if(!id) {
+                    $('#rr-action-buttons').show();
+                    fetchRoundRobinState(); 
+                } else {
+                    $('#rr-action-buttons').hide();
+                }
             } else if(targetCat === 'summary_plan') { 
                 $('.summary-plan-only').removeClass('hidden'); 
                 $('.summary-plan-hide').addClass('hidden'); 
@@ -981,8 +1033,16 @@
                 if(item) { 
                     $('#doc-id').val(item.id); $('#form-internal-id').val(item.internalId);
                     $('#form-job-type').val(item.jobType); $('#form-desc').val(item.description); $('#form-agency').val(item.agency); 
+                    
+                    // Trigger change to handle Special Job view if editing
+                    if(conf.isSub && item.jobType === 'Special Job') {
+                        $('#rr-normal-view').addClass('hidden');
+                        $('#rr-special-view').removeClass('hidden');
+                        $('#form-manual-sub').val(item.subcontractor);
+                    }
+
                     if (targetCat === 'summary_plan') {
-                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.gpsEnd); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); $('#form-sym-impact').val(item.symImpact);
+                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.gpsEnd); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); 
                         
                         const impactVal = item.symImpact;
                         if(impactVal && impactVal !== 'Impact' && impactVal !== 'Non Impact' && impactVal !== 'Other' && impactVal.trim() !== '') {
@@ -1001,7 +1061,7 @@
                         $('#form-action-date').val(item.actionDate ? item.actionDate.slice(0,16) : '');
                     }
                     $('#form-location').val(item.location); $('#form-remark').val(item.remark); if(item.nsRespond) $('#form-ns-respond').val(item.nsRespond).trigger('change');
-                    if(conf.isSub) { $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); $('#form-sub-name').val(item.subcontractor); $('#rr-next-name').text(item.subcontractor); $('.rr-box button').hide(); $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); }
+                    if(conf.isSub) { $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); $('#form-sub-name').val(item.subcontractor); $('#rr-next-name').text(item.subcontractor); $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); }
                     else { $('#form-due-date').val(item.dueDate); $('#form-team-req').val(item.teamReq); $('#form-req-person').val(item.reqPerson); $('#form-ref-job-id').val(item.refJobId); $('#form-gps').val(item.gps); }
                     if(conf.isSub) $('#form-due-date-sub').val(item.dueDate);
                     if(item.fileName) { $('#file-name-display').text(item.fileName); }
@@ -1136,7 +1196,7 @@
             
             if (currentCategoryFilter === 'summary_plan') {
                 // Custom columns for Summary Plan Job List
-                                // แก้ไขจุดที่ 1: เพิ่ม <th ...>Sym Impact</th> ลงใน cols
+                // แก้ไขจุดที่ 1: เพิ่ม <th ...>Sym Impact</th> ลงใน cols
                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Project Code</th><th class="${thClass}">Route Name</th><th class="${thClass}">Distance</th><th class="${thClass}">Due Date</th><th class="${thClass}">Sym Impact</th><th class="${thClass}">Progress</th><th class="${thClass}">NS</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isSub) {
                  cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
@@ -1172,12 +1232,13 @@
                             ? `<div class="w-full bg-gray-200 rounded-full h-2.5 mb-1 cursor-pointer" onclick="updateProgressSummary('${item.id}')" title="Click to update"><div class="${progressColor} h-2.5 rounded-full" style="width: ${progressVal}%"></div></div><div class="text-[10px] text-center font-bold text-gray-600 cursor-pointer" onclick="updateProgressSummary('${item.id}')">${progressVal}% <i class="fa-solid fa-pen ml-1 text-gray-400 hover:text-brand-500"></i></div>` 
                             : `<div class="text-center font-bold text-gray-500 text-xs">${progressVal}%</div>`;
 
+                        // แก้ไขจุดที่ 2: เพิ่ม <td> แสดงข้อมูล item.symImpact
                         rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
                                     <td class="p-3 text-center text-xs text-blue-600 font-bold">${item.projectCode||'-'}</td>
                                     <td class="p-3 text-xs truncate max-w-[150px]">${item.routeName||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
-									<td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
+                                    <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
                                     <td class="p-3 w-24 align-middle">${progressHtml}</td>
                                     <td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>
                                     <td class="p-3 text-center">${badge}</td>`;
@@ -1452,7 +1513,13 @@
                 const pDate = $('#form-plan-date').val(); const pStart = $('#form-plan-start').val(); const pEnd = $('#form-plan-end').val(); data.actionDate = (pDate && pStart) ? `${pDate}T${pStart}` : (pDate ? `${pDate}T00:00` : new Date().toISOString()); data.planDate = pDate; data.planStartTime = pStart; data.planEndTime = pEnd; data.sentPlanDate = $('#form-sent-plan-date').val(); data.unplannedImpact = $('#form-unplanned-impact').val(); data.cmId = $('#form-interruption-id-cm').val() || ''; data.project = $('#form-project').val() || ''; data.itemCount = $('#form-interruption-item').val() || ''; data.teamReq = $('#form-team-req').val() || ''; data.gps = ''; data.fileName = ''; data.fileUrl = '';
             } else {
                 data.actionDate = $('#form-action-date').val() || ''; data.fileName = $('#file-name-display').text() || ''; data.fileUrl = fileUrl || ''; data.gps = $('#form-gps').val() || '';
-                if (config.isSub) { data.dueDate = $('#form-due-date-sub').val() || ''; data.objective = $('#form-objective').val() || ''; data.expenses = $('#form-expenses').val() || ''; data.routeCode = $('#form-route-code-sub').val() || ''; data.subcontractor = $('#form-sub-name').val() || ''; }
+                if (config.isSub) { 
+                    data.dueDate = $('#form-due-date-sub').val() || ''; 
+                    data.objective = $('#form-objective').val() || ''; 
+                    data.expenses = $('#form-expenses').val() || ''; 
+                    data.routeCode = $('#form-route-code-sub').val() || ''; 
+                    data.subcontractor = $('#form-sub-name').val() || ''; 
+                }
                 else { data.dueDate = $('#form-due-date').val() || ''; data.teamReq = $('#form-team-req').val() || ''; data.reqPerson = $('#form-req-person').val() || ''; data.refJobId = $('#form-ref-job-id').val() || ''; }
             }
             if(!docId) { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); data.status = 'new'; }
@@ -1465,7 +1532,10 @@
                     else { data.updatedAt = nowIso; await sendToSheet(data, config.sheetName); }
                 } else {
                     await getAssignmentsRef().add(data);
-                    if(config.isSub && !docId) { await updateRoundRobinIndex(false, data.description); }
+                    // แก้ไข: ถ้าเป็น Special Job ไม่ต้องอัปเดต Round Robin
+                    if(config.isSub && !docId && data.jobType !== 'Special Job') { 
+                        await updateRoundRobinIndex(false, data.description); 
+                    }
                     let sheetData = { ...data }; sheetData.createdAt = nowIso; sheetData.updatedAt = nowIso; await sendToSheet(sheetData, config.sheetName); 
                 }
                 $.LoadingOverlay("hide"); closeModal(); Swal.fire('Saved', '', 'success');
@@ -1511,6 +1581,25 @@
             document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar); 
             ['#form-job-type', '#form-agency', '#form-team-req'].forEach(id => { $(id).change(function() { if($(this).val() === 'Other') $(id + '-other').addClass('show'); else $(id + '-other').removeClass('show'); }); }); 
             
+            // Logic เปลี่ยนกล่อง Round Robin ตาม Job Type
+            $('#form-job-type').change(function() {
+                const val = $(this).val();
+                const isSubMenu = menuConfig[currentCategoryFilter]?.isSub;
+                if (isSubMenu) {
+                    if (val === 'Special Job') {
+                        $('#rr-normal-view').addClass('hidden');
+                        $('#rr-special-view').removeClass('hidden');
+                        // Reset sub name so user must select manually
+                        $('#form-sub-name').val($('#form-manual-sub').val()); 
+                    } else {
+                        $('#rr-normal-view').removeClass('hidden');
+                        $('#rr-special-view').addClass('hidden');
+                        // Restore RR sub name
+                        fetchRoundRobinState();
+                    }
+                }
+            });
+
             // Sym Impact Other Toggle
             $('#form-sym-impact').change(function() {
                 if($(this).val() === 'Other') $('#form-sym-impact-other').addClass('show');
