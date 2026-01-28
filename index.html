@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment System </title>
+    <title>Assignment Interruption System</title>
     
     <!-- CSS & Libs -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (v8 for compatibility with existing code) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -98,8 +98,7 @@
         <div class="p-6 border-b border-gray-100 flex items-center justify-center bg-gray-50">
             <div class="text-center overflow-hidden">
                 <div class="flex justify-center items-center mb-3">
-                    <img src="SYMC logo.png" alt="SYMC Logo" class="h-16 object-contain" onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');">
-                    <i id="logo-fallback" class="fa-solid fa-bolt text-4xl text-brand-500 hidden"></i>
+                    <i id="logo-fallback" class="fa-solid fa-bolt text-4xl text-brand-500"></i>
                 </div>
                 <h1 class="text-xl font-bold text-gray-800 tracking-tight">Assignment</h1>
                 <h2 class="text-xs font-semibold text-gray-500 tracking-wide uppercase mt-1">Interruption Team</h2>
@@ -140,8 +139,13 @@
                     <a href="#" onclick="switchView('setting')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300"><i class="fa-solid fa-gear mr-2"></i>Setting</a>
                 </div>
             </div>
+            
+            <!-- Link Support Menu (Added) -->
+            <a href="#" onclick="switchView('link_support')" class="nav-item flex items-center p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all group" data-view="link_support">
+                <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-link text-lg group-hover:text-brand-500"></i></div><span class="ml-3">Link Support</span>
+            </a>
         </nav>
-        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment</p></div>
+        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption</p></div>
     </aside>
     
     <!-- Main Content -->
@@ -282,7 +286,7 @@
             <!-- VIEW: SUBCONTRACTOR DASHBOARD (COST ADDED) -->
             <div id="view-sub-dashboard" class="view-section hidden w-full h-auto lg:h-full lg:overflow-y-auto overflow-visible pb-40">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
-                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">หมวดงาน Subcontractor</label><select id="sub-filter-category" onchange="renderSubDashboardCharts()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"><option value="all">ทั้งหมด (All Sub)</option><option value="sub_preventive">Preventive</option><option value="sub_reroute">Reroute</option><option value="sub_reconfigure">Reconfigure</option></select></div>
+                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">หมวดงาน Subcontractor</label><select id="sub-filter-category" onchange="renderSubDashboardCharts()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500"><option value="all">ทั้งหมด (All)</option><option value="sub_preventive">Preventive</option><option value="sub_reroute">Reroute</option><option value="sub_reconfigure">Reconfigure</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา</label><div class="flex gap-2"><input type="date" id="sub-date-start" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="sub-date-end" onchange="renderSubDashboardCharts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
                     <div class="w-full sm:w-auto ml-auto flex gap-2">
                         <button onclick="window.print()" class="print-hide px-4 py-2 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700 shadow-md"><i class="fa-solid fa-print mr-1"></i> Print PDF</button>
@@ -315,9 +319,31 @@
             <!-- VIEW: CALENDAR -->
             <div id="view-calendar" class="view-section hidden flex-1 flex flex-col overflow-visible lg:overflow-hidden h-auto lg:h-full">
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200 h-[600px] lg:h-full flex flex-col overflow-hidden">
-                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 flex-none"><div class="flex items-center space-x-4"><button onclick="changeMonth(-1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition"><i class="fa-solid fa-chevron-left"></i></button><h2 id="calendar-month-year" class="text-2xl font-bold text-gray-800 w-48 text-center"></h2><button onclick="changeMonth(1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition"><i class="fa-solid fa-chevron-right"></i></button></div><button onclick="jumpToToday()" class="px-5 py-2 bg-brand-500 text-white rounded-lg text-sm hover:bg-brand-600 shadow-md hover:shadow-lg transition font-medium">วันนี้ (Today)</button></div>
-                    <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-500 text-sm flex-none uppercase tracking-wide"><div class="text-red-500">อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div class="text-brand-500">ส</div></div>
-                    <div id="calendar-days" class="grid grid-cols-7 gap-2 flex-1 overflow-y-auto pr-1"></div>
+                     <div class="flex flex-col xl:flex-row justify-between items-center mb-4 flex-none gap-4">
+                        <div class="flex items-center space-x-4">
+                            <button onclick="changeCalendarPeriod(-1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition flex items-center justify-center border border-gray-200 shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 id="calendar-month-year" class="text-xl md:text-2xl font-bold text-gray-800 w-64 text-center"></h2>
+                            <button onclick="changeCalendarPeriod(1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition flex items-center justify-center border border-gray-200 shadow-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <!-- View Toggle Buttons -->
+                            <div class="bg-gray-100 p-1 rounded-lg flex text-sm font-medium text-gray-500">
+                                <button onclick="setCalendarView('month')" id="btn-view-month" class="px-4 py-1.5 rounded-md transition-all shadow-sm bg-white text-brand-600">Month</button>
+                                <button onclick="setCalendarView('week')" id="btn-view-week" class="px-4 py-1.5 rounded-md transition-all hover:text-gray-700">Week</button>
+                                <button onclick="setCalendarView('day')" id="btn-view-day" class="px-4 py-1.5 rounded-md transition-all hover:text-gray-700">Day</button>
+                            </div>
+                            <button onclick="jumpToToday()" class="px-4 py-1.5 bg-brand-500 text-white rounded-lg text-sm hover:bg-brand-600 shadow-md hover:shadow-lg transition font-medium flex items-center"><i class="fa-solid fa-calendar-day mr-2"></i> วันนี้</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Header (Days) -->
+                    <div id="calendar-header-days" class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-500 text-sm flex-none uppercase tracking-wide">
+                        <div class="text-red-500">อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div class="text-brand-500">ส</div>
+                    </div>
+                    
+                    <!-- Calendar Grid Container -->
+                    <div id="calendar-days" class="flex-1 overflow-y-auto pr-1 grid gap-2"></div>
                 </div>
             </div>
             
@@ -418,6 +444,68 @@
                     </div>
                 </div>
             </div>
+
+            <!-- VIEW: LINK SUPPORT (NEW) -->
+            <div id="view-link-support" class="view-section hidden flex-1 flex flex-col overflow-auto">
+                <div class="max-w-5xl mx-auto w-full p-4 md:p-6 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3 shadow-sm"><i class="fa-solid fa-link"></i></span> Link Support Center
+                        </h3>
+                        
+                        <!-- Add Form -->
+                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-6 shadow-inner">
+                            <label class="block text-sm font-bold text-gray-600 mb-3 uppercase tracking-wide">เพิ่มลิงก์ใหม่ (Add New Link)</label>
+                            <div class="flex flex-col md:flex-row gap-3">
+                                <div class="flex-1">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-tag"></i></div>
+                                        <input type="text" id="ls-name" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ชื่อเว็บไซต์ (Link Name)">
+                                    </div>
+                                </div>
+                                <div class="flex-[2]">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-globe"></i></div>
+                                        <input type="url" id="ls-url" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="URL (เช่น https://www.google.com)">
+                                    </div>
+                                </div>
+                                <button onclick="addLinkItem()" class="bg-brand-500 text-white px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-md transition font-medium whitespace-nowrap flex items-center justify-center">
+                                    <i class="fa-solid fa-plus mr-2"></i> เพิ่มรายการ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="mb-4">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                <input type="text" id="ls-search" oninput="renderLinkSupport()" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ค้นหาชื่อเว็บไซต์ หรือ URL...">
+                            </div>
+                        </div>
+
+                        <!-- Link List Table -->
+                        <div class="overflow-hidden border border-gray-200 rounded-xl shadow-sm">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/3">ชื่อเว็บไซต์ (Name)</th>
+                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ที่อยู่ URL (Address)</th>
+                                        <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider w-24">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-link-support" class="bg-white divide-y divide-gray-200">
+                                    <!-- Items will be injected here -->
+                                </tbody>
+                            </table>
+                            <div id="ls-empty-state" class="hidden py-12 text-center flex flex-col items-center justify-center text-gray-400 bg-white">
+                                <div class="bg-gray-100 p-4 rounded-full mb-3"><i class="fa-solid fa-link-slash text-2xl text-gray-300"></i></div>
+                                <p class="text-sm">ยังไม่มีรายการลิงก์ในระบบ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -551,7 +639,7 @@
 
     <script>
         // === GLOBAL SETUP ===
-         const firebaseConfig = {
+        const firebaseConfig = {
 			   apiKey: "AIzaSyBY0ZewKLp8MJbkq2xxcQ2Z_cz7p04e0EY",
 			   authDomain: "assignment-interruption-final.firebaseapp.com",
 			   projectId: "assignment-interruption-final",
@@ -581,12 +669,16 @@
         let currentPage = 1;
         let rowsPerPage = 10;
         let filteredData = [];
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let charts = {};
+        let charts = {}; // <--- Adding this
+        
+        // Calendar State
+        let currentCalendarDate = new Date();
+        let calendarViewMode = 'month'; // 'month', 'week', 'day'
+        let currentMonth = new Date().getMonth(); // Legacy support if needed
+        let currentYear = new Date().getFullYear(); // Legacy support if needed
 
         const CONST_DATA = { 
-            projects: [ "MEA", "PEA", "NBTC", "Sky Train", "Bangkok Metropolis", "BTS", "MRT", "NT", "Customer", "Department Of Highways", "Department Of Rural Road", "Landlord", "Local Authorty", "Motorway", "State Railway OF Thailand", "Underground", "MOI", "Noah", "DWDM", "OLT and ONU", "Site Relocation", "Fiber Infra Sharing", "Improvement","Migration", "Other" ], 
+            projects: [ "MEA", "PEA", "NBTC", "Sky Train", "Bangkok Metropolis", "BTS", "MRT", "NT", "Customer", "Department Of Highways", "Department Of Rural Road", "Landlord", "Local Authorty", "Motorway", "State Railway OF Thailand", "Underground", "MOI", "Noah", "DWDM", "OLT and ONU", "Site Relocation", "Fiber Infra Sharing", "Improvement", "Migration","Other" ], 
             agencies: [ "MEA", "PEA", "NBTC", "Sky Train", "NPD", "SQM", "Region", "NOC", "SQI", "ROW", "Landlord", "TPD", "Customer", "Bangkok Metropolis", "BTS", "MRT", "NT", "Motorway", "Department Of Highways", "Department Of Rural Road", "Other" ],
             teamRequests: [ "NOC", "HelpDesk", "TPD", "NPD", "SQM", "SQI", "Sale", "Region BKK", "Cores Network", "Landlord", "SDM", "Region Provincial", "ROW", "Other" ], 
             sideCounts: ["1 ฝั่ง", "2 ฝั่ง"],
@@ -602,50 +694,335 @@
         };
         const menuConfig = { 'plan_interruption': { title: 'Interruption Plan', isSub: false, isPlan: true, prefix: 'IP', jobTypeKey: 'plan', sheetName: 'Interruption Plan' }, 'summary_plan': { title: 'Summary Plan', isSub: false, isPlan: true, prefix: 'Sum', jobTypeKey: 'summary_plan', sheetName: 'Summary Plan' }, 'team': { title: 'Assignment Interruption Team', isSub: false, prefix: 'AI', jobTypeKey: 'team', sheetName: 'Interruption Team' }, 'sub_preventive': { title: 'Assignment Preventive', isSub: true, prefix: 'PVT', jobTypeKey: 'preventive', sheetName: 'Assignment Preventive' }, 'sub_reroute': { title: 'Assignment Reroute', isSub: true, prefix: 'RER', jobTypeKey: 'reroute', sheetName: 'Assignment Reroute' }, 'sub_reconfigure': { title: 'Assignment Reconfigure', isSub: true, prefix: 'REF', jobTypeKey: 'reconfigure', sheetName: 'Assignment Reconfigure' }, 'dashboard_analytics': { title: 'Dashboard Analytics', isSub: false, isPlan: false, prefix: 'DB', jobTypeKey: 'team' }, 'sub_dashboard': { title: 'Dashboard Subcontractor', isSub: false, isPlan: false, prefix: 'DBS', jobTypeKey: 'preventive' } };
 
-		function getAssignmentsRef() { return db ? db.collection('assignments') : null; }
+        function getAssignmentsRef() { return db ? db.collection('assignments') : null; }
         function getSettingsRef() { return db ? db.collection('settings').doc('masterData') : null; }
-      
+        
         function fmtDate(s, d) { if(!s) return '-'; let dt; if(s.seconds) dt = new Date(s.seconds*1000); else dt=new Date(s); if(isNaN(dt.getTime())) return '-'; const day=dt.getDate(), m=dt.getMonth()+1, y=dt.getFullYear()+543, h=String(dt.getHours()).padStart(2,'0'), mn=String(dt.getMinutes()).padStart(2,'0'); return d ? `${day}/${m}/${y}` : `${day}/${m}/${y} ${h}:${mn}`; }
         function extractNS(d) { const a=Array.isArray(d)?d:(d?[d]:[]); const names=[], phones=[]; a.forEach(s=>{ if(s.includes(' - ')){ const p=s.split(' - '); names.push(p[0]); phones.push(p[1]); } else { names.push(s); } }); return {names:names.join(', '), phones:phones.join(', ') || '-'}; }
         function extractGPS(g) { const lines = (g||'').split('\n'); return {start: lines[0]||'-', end: lines[1]||'-'}; }
 
         // === FUNCTION DEFINITIONS ===
 
-        // Defined Globally
-        window.renderCalendar = function(m, y) {
-            $('#calendar-month-year').text(`${["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."][m]} ${y}`);
-            const c = document.getElementById("calendar-days"); if(!c) return; c.innerHTML = "";
-            const f = new Date(y, m, 1).getDay(), d = new Date(y, m + 1, 0).getDate();
-            for(let i=0; i<f; i++) c.appendChild(document.createElement("div"));
-            for(let i=1; i<=d; i++) {
-                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-                
-                // แก้ไข: เพิ่ม && a.category !== 'summary_plan' เพื่อไม่ให้แสดงงานของ Summary Plan ในปฏิทิน
-                const jobs = assignments.filter(a => (a.actionDate||'').startsWith(ds) && a.status!=='new' && a.status!=='cancel' && a.jobType!=='Team Daily' && a.category !== 'summary_plan').sort((a,b) => (a.actionDate||'').localeCompare(b.actionDate||''));
-                
-                const el = document.createElement("div"); el.className = "calendar-day relative h-24 border rounded-xl p-1 bg-white hover:bg-gray-50 overflow-hidden";
-                let h = ''; 
-                jobs.forEach(j => { 
-                    let cl = j.status==='process'?'bg-yellow-100 text-yellow-800':(j.status==='finish'||j.status==='complete'?'bg-green-100 text-green-800':'bg-gray-100'); 
-                    h += `<div class="text-[9px] ${cl} rounded px-1 mb-1 truncate cursor-pointer hover:opacity-80" onclick="showJobDetail('${j.id}'); event.stopPropagation();"><b>${j.actionDate.split('T')[1].slice(0,5)}</b> ${j.internalId}</div>`; 
-                });
-                el.innerHTML = `<div class="text-right text-xs font-bold text-gray-400 mb-1">${i}</div><div class="overflow-y-auto h-16 custom-scrollbar">${h}</div>`;
-                c.appendChild(el);
-            }
+        // === CALENDAR FUNCTIONS (REFACTORED) ===
+        window.setCalendarView = function(mode) {
+            calendarViewMode = mode;
+            // Update buttons styling
+            ['month', 'week', 'day'].forEach(m => {
+                const btn = $(`#btn-view-${m}`);
+                if (m === mode) {
+                    btn.addClass('bg-white text-brand-600 shadow-sm').removeClass('hover:text-gray-700');
+                } else {
+                    btn.removeClass('bg-white text-brand-600 shadow-sm').addClass('hover:text-gray-700');
+                }
+            });
+            window.renderCalendar();
         };
 
-        window.changeMonth = function(step) {
-            currentMonth += step;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            else if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            window.renderCalendar(currentMonth, currentYear);
+        window.changeCalendarPeriod = function(step) {
+            if (calendarViewMode === 'month') {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + step);
+            } else if (calendarViewMode === 'week') {
+                currentCalendarDate.setDate(currentCalendarDate.getDate() + (step * 7));
+            } else { // day
+                currentCalendarDate.setDate(currentCalendarDate.getDate() + step);
+            }
+            // Sync legacy vars just in case
+            currentMonth = currentCalendarDate.getMonth();
+            currentYear = currentCalendarDate.getFullYear();
+            window.renderCalendar();
         };
 
         window.jumpToToday = function() {
-            const now = new Date();
-            currentMonth = now.getMonth();
-            currentYear = now.getFullYear();
-            window.renderCalendar(currentMonth, currentYear);
+            currentCalendarDate = new Date();
+            currentMonth = currentCalendarDate.getMonth();
+            currentYear = currentCalendarDate.getFullYear();
+            window.renderCalendar();
+        };
+
+        window.renderCalendar = function() {
+            const container = document.getElementById("calendar-days");
+            const headerRow = document.getElementById("calendar-header-days");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+            const shortThaiMonths = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+
+            // Helper to render jobs
+            const getJobsForDate = (dateStr) => {
+                return assignments.filter(a => (a.actionDate||'').startsWith(dateStr) && a.status!=='new' && a.status!=='cancel' && a.jobType!=='Team Daily' && a.category !== 'summary_plan')
+                    .sort((a,b) => (a.actionDate||'').localeCompare(b.actionDate||''));
+            };
+
+            const createJobHTML = (j, isCompact = true) => {
+                let cl = j.status==='process'?'bg-yellow-100 text-yellow-800 border-yellow-200':(j.status==='finish'||j.status==='complete'?'bg-green-100 text-green-800 border-green-200':'bg-gray-100 border-gray-200');
+                const time = j.actionDate.split('T')[1].slice(0,5);
+                
+                if (isCompact) {
+                    return `<div class="text-[10px] ${cl} border rounded px-1.5 py-0.5 mb-1 truncate cursor-pointer hover:shadow-md transition" onclick="showJobDetail('${j.id}'); event.stopPropagation();" title="${j.description}">
+                        <b>${time}</b> ${j.internalId}
+                    </div>`;
+                } else {
+                    // Detailed card for Week/Day view
+                    return `<div class="flex flex-col ${cl} border rounded-lg p-2 mb-2 cursor-pointer hover:shadow-md transition relative group" onclick="showJobDetail('${j.id}'); event.stopPropagation();">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-xs bg-white bg-opacity-50 px-1 rounded">${time}</span>
+                            <span class="text-[10px] font-mono opacity-70">${j.internalId}</span>
+                        </div>
+                        <div class="text-xs font-semibold truncate leading-tight">${j.description}</div>
+                        <div class="text-[10px] mt-1 opacity-80 truncate"><i class="fa-solid fa-user-tag mr-1"></i>${(j.subcontractor || j.teamReq || '-')}</div>
+                        <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-magnifying-glass-plus text-gray-500"></i></div>
+                    </div>`;
+                }
+            };
+
+            if (calendarViewMode === 'month') {
+                // === MONTH VIEW ===
+                $('#calendar-month-year').text(`${thaiMonths[month]} ${year + 543}`);
+                if(headerRow) headerRow.classList.remove('hidden');
+                container.className = "grid grid-cols-7 gap-2 flex-1 overflow-y-auto custom-scrollbar content-start"; // Fixed grid
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                for(let i=0; i<firstDay; i++) container.appendChild(document.createElement("div"));
+                
+                for(let i=1; i<=daysInMonth; i++) {
+                    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                    const jobs = getJobsForDate(ds);
+                    const el = document.createElement("div"); 
+                    
+                    // Highlight today
+                    const today = new Date();
+                    const isToday = i === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                    const borderClass = isToday ? "border-brand-500 ring-1 ring-brand-200" : "border-gray-200";
+                    const bgClass = isToday ? "bg-brand-50" : "bg-white";
+
+                    el.className = `calendar-day relative min-h-[100px] border rounded-xl p-1 hover:bg-gray-50 overflow-hidden flex flex-col ${borderClass} ${bgClass}`;
+                    
+                    let h = ''; jobs.forEach(j => h += createJobHTML(j, true));
+                    el.innerHTML = `<div class="text-right text-xs font-bold ${isToday ? 'text-brand-600' : 'text-gray-400'} mb-1 mr-1">${i}</div><div class="overflow-y-auto flex-1 custom-scrollbar w-full">${h}</div>`;
+                    container.appendChild(el);
+                }
+
+            } else if (calendarViewMode === 'week') {
+                // === WEEK VIEW ===
+                // Calculate start of week (Sunday)
+                const startOfWeek = new Date(currentCalendarDate);
+                startOfWeek.setDate(currentCalendarDate.getDate() - currentCalendarDate.getDay());
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+                const sDay = startOfWeek.getDate(), sMonth = shortThaiMonths[startOfWeek.getMonth()];
+                const eDay = endOfWeek.getDate(), eMonth = shortThaiMonths[endOfWeek.getMonth()];
+                $('#calendar-month-year').text(`${sDay} ${sMonth} - ${eDay} ${eMonth} ${endOfWeek.getFullYear()+543}`);
+                
+                if(headerRow) headerRow.classList.remove('hidden');
+                container.className = "grid grid-cols-7 gap-2 flex-1 overflow-y-hidden h-full"; // Columns extend full height
+
+                for(let i=0; i<7; i++) {
+                    const d = new Date(startOfWeek);
+                    d.setDate(startOfWeek.getDate() + i);
+                    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    const jobs = getJobsForDate(ds);
+                    
+                    const isToday = d.toDateString() === new Date().toDateString();
+                    const borderClass = isToday ? "border-brand-500 bg-brand-50" : "border-gray-200 bg-white";
+
+                    const el = document.createElement("div");
+                    el.className = `flex flex-col h-full border rounded-xl overflow-hidden ${borderClass}`;
+                    
+                    let h = ''; jobs.forEach(j => h += createJobHTML(j, false)); // Use detailed card
+                    
+                    el.innerHTML = `
+                        <div class="p-2 text-center border-b ${isToday ? 'border-brand-200 bg-brand-100' : 'border-gray-100 bg-gray-50'}">
+                            <div class="text-lg font-bold ${isToday ? 'text-brand-700' : 'text-gray-700'}">${d.getDate()}</div>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-1 custom-scrollbar space-y-1">
+                            ${h}
+                        </div>
+                    `;
+                    container.appendChild(el);
+                }
+
+            } else {
+                // === DAY VIEW ===
+                $('#calendar-month-year').text(`${currentCalendarDate.getDate()} ${thaiMonths[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()+543}`);
+                if(headerRow) headerRow.classList.add('hidden'); // Hide Sun-Sat header
+                container.className = "flex flex-col h-full overflow-hidden bg-white border rounded-xl";
+
+                const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(currentCalendarDate.getDate()).padStart(2,'0')}`;
+                const jobs = getJobsForDate(ds);
+
+                if (jobs.length === 0) {
+                    container.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center text-gray-400">
+                        <i class="fa-regular fa-calendar-xmark text-6xl mb-4 text-gray-200"></i>
+                        <p>ไม่มีงานในวันนี้</p>
+                    </div>`;
+                } else {
+                    let html = `<div class="flex-1 overflow-y-auto p-4 custom-scrollbar"><div class="space-y-3">`;
+                    jobs.forEach(j => {
+                        let statusColor = j.status==='process'?'border-l-4 border-yellow-400':(j.status==='finish'||j.status==='complete'?'border-l-4 border-green-500':'border-l-4 border-blue-500');
+                        let time = j.actionDate.split('T')[1].slice(0,5);
+                        
+                        html += `
+                        <div class="flex items-start bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition cursor-pointer ${statusColor}" onclick="showJobDetail('${j.id}')">
+                            <div class="mr-4 text-center min-w-[60px]">
+                                <div class="text-xl font-bold text-gray-800">${time}</div>
+                                <div class="text-xs text-gray-500 uppercase font-bold mt-1 tracking-wider">${j.status}</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-lg text-gray-800">${j.description}</h4>
+                                    <span class="font-mono text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">${j.internalId}</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
+                                    <div><i class="fa-solid fa-helmet-safety w-5 text-center text-orange-500"></i> ${j.subcontractor || j.teamReq || '-'}</div>
+                                    <div><i class="fa-solid fa-location-dot w-5 text-center text-red-500"></i> ${j.location || '-'}</div>
+                                    <div><i class="fa-solid fa-user w-5 text-center text-blue-500"></i> ${extractNS(j.nsRespond).names}</div>
+                                    <div><i class="fa-solid fa-phone w-5 text-center text-green-500"></i> ${extractNS(j.nsRespond).phones}</div>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex items-center justify-center self-center text-gray-300">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div></div>`;
+                    container.innerHTML = html;
+                }
+            }
+        };
+
+        // === LINK SUPPORT FUNCTIONS (NEW) ===
+        window.renderLinkSupport = function() {
+            const list = $('#list-link-support');
+            list.empty();
+            let links = masterData.linkSupport || [];
+            
+            // Search Filter
+            const searchTerm = $('#ls-search').val() ? $('#ls-search').val().toLowerCase() : '';
+            if(searchTerm) {
+                links = links.filter(l => l.name.toLowerCase().includes(searchTerm) || l.url.toLowerCase().includes(searchTerm));
+            }
+            
+            if (links.length === 0) {
+                $('#ls-empty-state').removeClass('hidden');
+                if(searchTerm) $('#ls-empty-state p').text('ไม่พบข้อมูลที่ค้นหา');
+                else $('#ls-empty-state p').text('ยังไม่มีรายการลิงก์ในระบบ');
+            } else {
+                $('#ls-empty-state').addClass('hidden');
+                
+                // IMPORTANT: We need to find the original index for delete to work correctly
+                const originalLinks = masterData.linkSupport || [];
+                
+                links.forEach((item) => {
+                    // Find index in the original array
+                    // Since objects are unique references in memory (unless modified deeply), indexOf should work.
+                    // However, to be safe with primitive values or recreated objects, we might iterate.
+                    // But here, masterData.linkSupport is the source of truth.
+                    // Let's rely on finding the object reference since we didn't deep clone.
+                    let originalIndex = -1;
+                    
+                    // Simple search for the object in the original array
+                    for(let i=0; i<originalLinks.length; i++) {
+                        if(originalLinks[i].name === item.name && originalLinks[i].url === item.url) {
+                            originalIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    const row = `
+                        <tr class="hover:bg-gray-50 transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-500 mr-3 border border-brand-100">
+                                        <i class="fa-solid fa-globe text-xs"></i>
+                                    </div>
+                                    <div class="text-sm font-bold text-gray-700">${item.name}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="${item.url}" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center break-all">
+                                    ${item.url} <i class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-xs opacity-50"></i>
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button onclick="deleteLinkItem(${originalIndex})" class="text-gray-300 hover:text-red-500 transition-colors p-1.5 rounded-md hover:bg-red-50" title="ลบ">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    list.append(row);
+                });
+            }
+        };
+
+        window.addLinkItem = async function() {
+            const name = $('#ls-name').val().trim();
+            let url = $('#ls-url').val().trim();
+            
+            if (!name || !url) {
+                Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อลิงก์และ URL ให้ครบถ้วน', 'warning');
+                return;
+            }
+
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            const newItem = { name, url };
+            
+            try {
+                const ref = getSettingsRef();
+                const doc = await ref.get();
+                if (doc.exists) {
+                    await ref.update({ linkSupport: firebase.firestore.FieldValue.arrayUnion(newItem) });
+                } else {
+                    await ref.set({ linkSupport: [newItem] }, { merge: true });
+                }
+                
+                $('#ls-name').val('');
+                $('#ls-url').val('');
+                Swal.fire({ icon: 'success', title: 'เพิ่มลิงก์เรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+            } catch (error) {
+                console.error("Error adding link:", error);
+                Swal.fire('Error', 'บันทึกไม่สำเร็จ: ' + error.message, 'error');
+            }
+        };
+
+        window.deleteLinkItem = async function(index) {
+            if(index === -1) return; // Invalid index
+            
+            Swal.fire({
+                title: 'ยืนยันการลบ?',
+                text: "คุณต้องการลบลิงก์นี้ใช่หรือไม่",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const ref = getSettingsRef();
+                        const doc = await ref.get();
+                        if (doc.exists) {
+                            const currentLinks = doc.data().linkSupport || [];
+                            if (index >= 0 && index < currentLinks.length) {
+                                currentLinks.splice(index, 1);
+                                await ref.update({ linkSupport: currentLinks });
+                                Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                            }
+                        }
+                    } catch (error) {
+                        Swal.fire('Error', error.message, 'error');
+                    }
+                }
+            });
         };
 
         window.renderSummaryDashboard = function() {
@@ -801,8 +1178,20 @@
                  data.forEach(a => { const s = a.status || 'new'; if(counts[s] !== undefined) counts[s]++; });
                  $('#plan-count-new').text(counts.new); $('#plan-count-process').text(counts.process); $('#plan-count-complete').text(counts.complete); $('#plan-count-updatefms').text(counts.update_fms); $('#plan-count-cancel').text(counts.cancel);
              } else if(currentCategoryFilter === 'summary_plan') {
-                 // No mini-dashboard for summary plan table view, main dash is separate
+                 // UPDATE SUMMARY PLAN JOB LIST DASHBOARD
+                 const counts = { new:0, process:0, complete:0, cancel:0 };
+                 data.forEach(a => { 
+                     let s = a.status || 'new';
+                     // Map finish to complete for this dashboard
+                     if(s === 'finish') s = 'complete'; 
+                     if(counts[s] !== undefined) counts[s]++; 
+                 });
+                 $('#sum-list-new').text(counts.new); 
+                 $('#sum-list-process').text(counts.process); 
+                 $('#sum-list-complete').text(counts.complete); 
+                 $('#sum-list-cancel').text(counts.cancel);
              } else {
+                 // ... existing logic for other dashboards ...
                  const counts = { new:0, process:0, assign:0, approve:0, finish:0, complete:0, cancel:0 };
                  const costs = { new:0, process:0, assign:0, approve:0, finish:0, complete:0, cancel:0 };
                  let grandTotal = 0;
@@ -897,302 +1286,6 @@
             const config = menuConfig[currentCategoryFilter];
             const thClass = "p-3 text-center align-middle whitespace-normal break-words font-semibold text-gray-700 bg-gray-50 border-b border-gray-200 min-w-[80px]";
             let cols = `<th class="${thClass}">Job ID</th>`;
-            if (config && config.isSub) {
-                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
-            } else if (config && config.isPlan) {
-                 cols += `<th class="${thClass}">Interruption Type</th><th class="${thClass}">Project</th><th class="${thClass}">Desc</th><th class="${thClass}">Agency</th><th class="${thClass}">Sent Plan Date</th><th class="${thClass}">Action Date</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">NS</th><th class="${thClass}">Item</th><th class="${thClass}">Action</th>`;
-            } else {
-                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">Action Date</th><th class="${thClass}">Due Date</th><th class="${thClass}">Team</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
-            }
-            $('#table-header').html(`<i class="fa-solid fa-list-ul mr-2 text-brand-500"></i> รายการงาน ${config ? config.title : 'All'}`); th.innerHTML = cols;
-            filteredData = assignments.filter(a => {
-                if (currentCategoryFilter !== 'dashboard_analytics' && currentCategoryFilter !== 'sub_dashboard' && a.category !== currentCategoryFilter) return false;
-                if (fs !== 'all' && a.status !== fs) return false;
-                const searchFields = [ a.internalId, a.description, a.location, a.jobType, a.agency, a.teamReq, a.subcontractor, a.project, (a.nsRespond || []).join(' ') ];
-                return searchFields.join(' ').toLowerCase().includes(sv);
-            });
-            const total = filteredData.length, start = (currentPage - 1) * rowsPerPage, pageData = filteredData.slice(start, start + rowsPerPage);
-            tbody.innerHTML = "";
-            if (total === 0) { $('#empty-state').removeClass('hidden'); $('#data-table').addClass('hidden'); }
-            else {
-                $('#empty-state').addClass('hidden'); $('#data-table').removeClass('hidden');
-                pageData.forEach(item => {
-                    const badge = `<span class="status-badge status-${item.status}">${item.status.toUpperCase().replace('_', ' ')}</span>`;
-                    const sub = config && config.isSub ? (item.subcontractor || '-') : (item.teamReq || '-');
-                    const acts = window.getActionButtons(item, config && config.isSub, config && config.isPlan);
-                    let rowHtml = `<td class="p-3 text-center font-mono font-bold text-brand-600 text-xs">${item.internalId}</td>`;
-                    if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-xs">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
-                        const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
-                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
-                    } else {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-xs">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs">${item.routeCode||'-'}</td>`;
-                        rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
-                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
-                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
-                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td>`;
-                        rowHtml += `<td class="p-3 text-center">${badge}</td>`;
-                    }
-                    let m = `<button onclick="viewDetail('${item.id}')" class="text-gray-400 hover:text-green-600 mx-1"><i class="fa-solid fa-file-lines"></i></button>`;
-                    if(config && config.isSub) m += `<button onclick="requestApprove('${item.id}')" class="text-gray-400 hover:text-purple-600 mx-1"><i class="fa-solid fa-money-bill-wave"></i></button>`;
-                    m += `<button onclick="openModal('${item.id}')" class="text-gray-400 hover:text-blue-600 mx-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteAssignment('${item.id}')" class="text-gray-400 hover:text-red-600 mx-1"><i class="fa-solid fa-trash-can"></i></button>`;
-                    if(item.fileUrl && !(config && config.isPlan)) m+= `<a href="${item.fileUrl}" target="_blank" class="text-gray-400 hover:text-blue-500 mx-1"><i class="fa-solid fa-cloud-arrow-down"></i></a>`;
-                    rowHtml += `<td class="p-3 text-center"><div class="flex items-center justify-center space-x-2"><div class="flex gap-1">${acts}</div><div class="h-4 w-px bg-gray-200"></div><div class="flex">${m}</div></div></td>`;
-                    tbody.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50 border-b border-gray-50">${rowHtml}</tr>`);
-                });
-            }
-            $('#pagination-info').text(`Showing ${Math.min(start+1, total)}-${Math.min(start+pageData.length, total)} of ${total}`);
-            $('#pagination-controls').html(`<button onclick="changePage(${Math.max(1, currentPage-1)})" class="px-2 border rounded"><</button><button onclick="changePage(${Math.min(Math.ceil(total/rowsPerPage), currentPage+1)})" class="px-2 border rounded">></button>`);
-        };
-
-        window.renderSettings = function() {
-            const list = $('#list-subcontractors'); list.empty(); const subs = masterData.subcontractors || masterData.Subcontractors || []; subs.forEach(i => list.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('subcontractors', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
-            const list2 = $('#list-nsRespond'); list2.empty(); const ns = masterData.nsRespond || masterData.NsRespond || []; ns.forEach(i => list2.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('nsRespond', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
-        };
-
-        window.getActionButtons = function(item, isSub, isPlan) {
-            if (isPlan) {
-                const cancelBtn = `<button onclick="actionCancelPlan('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] ml-1">Cancel Job</button>`;
-                if (item.status === 'new') return `<button onclick="actionReceivePlan('${item.id}')" class="bg-blue-500 text-white px-2 py-0.5 rounded text-[10px]">Receive</button>${cancelBtn}`;
-                if (item.status === 'process') return `<button onclick="actionCompletePlan('${item.id}')" class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Complete</button>${cancelBtn}`;
-                if (item.status === 'complete') return `<button onclick="actionUpdateFMS('${item.id}')" class="bg-cyan-600 text-white px-2 py-0.5 rounded text-[10px]">Update FMS</button>`;
-                return '-';
-            }
-            if (!isSub) {
-                if (item.status === 'new') return `<button onclick="updateStatus('${item.id}','process',{receiveDate:new Date().toISOString()})" class="bg-yellow-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">Receive</button><button onclick="actionCancel('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">Cancel</button>`;
-                if (item.status === 'process') return `<button onclick="updateStatus('${item.id}','complete',{completeDate:new Date().toISOString()})" class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Finish</button>`;
-                return '-';
-            }
-            switch(item.status) {
-                case 'new': return `<button onclick="updateStatus('${item.id}','process',{receiveDate:new Date().toISOString()})" class="bg-yellow-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">Receive</button><button onclick="actionCancel('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">Cancel</button>`;
-                case 'process': return `<button onclick="actionAssign('${item.id}')" class="bg-purple-500 text-white px-2 py-0.5 rounded text-[10px]">Assign</button>`;
-                case 'assign': return `<button onclick="actionApprove('${item.id}')" class="bg-cyan-500 text-white px-2 py-0.5 rounded text-[10px]">Approve</button>`;
-                case 'approve': return `<button onclick="actionFinish('${item.id}')" class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Finish</button>`;
-                default: return '-';
-            }
-        };
-        
-        window.actionReceivePlan = function(id) { window.updateStatus(id, 'process', { receiveDate: new Date().toISOString() }); };
-        window.actionCompletePlan = function(id) { Swal.fire({ title: 'ยืนยันงานเสร็จสิ้น?', text: "ต้องการเปลี่ยนสถานะเป็น Complete ใช่หรือไม่", icon: 'question', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'ตกลง (Yes)' }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'complete', { completeDate: new Date().toISOString() }); } }); };
-        window.actionUpdateFMS = function(id) { Swal.fire({ title: 'Update FMS', html: '<label class="block text-left text-sm mb-1">วันที่อัปเดต (Date)</label><input type="date" id="fms-date" class="swal2-input">', showCancelButton: true, preConfirm: () => { const d = document.getElementById('fms-date').value; if (!d) Swal.showValidationMessage('กรุณาใส่วันที่'); return d; } }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'update_fms', { fmsDate: result.value }); } }); };
-        window.actionCancelPlan = function(id) { const ops = (masterData.nsRespond || []).map(n => `<option value="${n}">${n}</option>`).join(''); Swal.fire({ title: 'Cancel Job', html: `<div class="text-left"><label class="text-sm font-bold text-gray-700">ผู้แจ้งยกเลิก (NS Respond)</label><select id="cancel-ns" class="swal2-select w-full m-0 mb-3 border border-gray-300 rounded p-2"><option value="">เลือกชื่อ...</option>${ops}</select><label class="text-sm font-bold text-gray-700">สาเหตุการยกเลิก (Reason)</label><input id="cancel-reason" class="swal2-input m-0 w-full" placeholder="ระบุสาเหตุ..."></div>`, showCancelButton: true, confirmButtonColor: '#ef4444', preConfirm: () => { const ns = document.getElementById('cancel-ns').value; const reason = document.getElementById('cancel-reason').value; if (!ns) Swal.showValidationMessage('กรุณาเลือกชื่อผู้แจ้งยกเลิก'); return { ns, reason }; } }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'cancel', { cancelBy: result.value.ns, cancelReason: result.value.reason, cancelDate: new Date().toISOString() }); } }); };
-
-        window.openModal = function(id = null) {
-            $('#assignment-form')[0].reset(); $('#doc-id').val(''); $('.select2').val(null).trigger('change');
-            if(!menuConfig[currentCategoryFilter] && currentCategoryFilter !== 'summary_dashboard') currentCategoryFilter = 'team'; 
-            
-            let targetCat = currentCategoryFilter === 'summary_dashboard' ? 'summary_plan' : currentCategoryFilter;
-            const conf = menuConfig[targetCat];
-            window.renderDropdowns();
-            $('.group-sub, .plan-only, .team-only, .not-plan-only, .summary-plan-only').addClass('hidden');
-            $('.summary-plan-hide').removeClass('hidden'); 
-            
-            // Reset Special Job View
-            $('#rr-normal-view').removeClass('hidden');
-            $('#rr-special-view').addClass('hidden');
-            $('#form-manual-sub').empty().append('<option value="">เลือกผู้รับเหมา...</option>');
-
-            if(targetCat === 'summary_plan') {
-                $('#form-agency').removeAttr('required');
-                $('#label-agency').html('Agency Inf.'); 
-            } else {
-                $('#form-agency').attr('required', 'required');
-                $('#label-agency').html('Agency Inf. <span class="text-red-500">*</span>');
-            }
-
-            if(targetCat === 'summary_plan' && !id) $('#summary-copy-actions').removeClass('hidden'); else $('#summary-copy-actions').addClass('hidden');
-            
-            if(conf.isSub) { 
-                $('.group-sub').removeClass('hidden'); 
-                $('.not-plan-only').removeClass('hidden'); 
-                
-                // Populate manual sub list for Special Job
-                const subs = masterData.subcontractors || masterData.Subcontractors || [];
-                subs.forEach(s => $('#form-manual-sub').append(new Option(s, s)));
-
-                if(!id) {
-                    $('#rr-action-buttons').show();
-                    fetchRoundRobinState(); 
-                } else {
-                    $('#rr-action-buttons').hide();
-                }
-            } else if(targetCat === 'summary_plan') { 
-                $('.summary-plan-only').removeClass('hidden'); 
-                $('.summary-plan-hide').addClass('hidden'); 
-            } else if(conf.isPlan) { 
-                $('.plan-only').removeClass('hidden'); 
-                $('.not-plan-only').addClass('hidden'); 
-            } else { 
-                $('.team-only').removeClass('hidden'); 
-                $('.not-plan-only').removeClass('hidden'); 
-            }
-            
-            if(id) { 
-                const item = assignments.find(a => a.id === id); 
-                if(item) { 
-                    $('#doc-id').val(item.id); $('#form-internal-id').val(item.internalId);
-                    $('#form-job-type').val(item.jobType); $('#form-desc').val(item.description); $('#form-agency').val(item.agency); 
-                    
-                    // Trigger change to handle Special Job view if editing
-                    if(conf.isSub && item.jobType === 'Special Job') {
-                        $('#rr-normal-view').addClass('hidden');
-                        $('#rr-special-view').removeClass('hidden');
-                        $('#form-manual-sub').val(item.subcontractor);
-                    }
-
-                    if (targetCat === 'summary_plan') {
-                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.gpsEnd); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); 
-                        
-                        const impactVal = item.symImpact;
-                        if(impactVal && impactVal !== 'Impact' && impactVal !== 'Non Impact' && impactVal !== 'Other' && impactVal.trim() !== '') {
-                            $('#form-sym-impact').val('Other').trigger('change');
-                            $('#form-sym-impact-other').val(impactVal);
-                        } else if (impactVal === 'Other') {
-                             $('#form-sym-impact').val('Other').trigger('change');
-                        } else {
-                            $('#form-sym-impact').val(impactVal).trigger('change');
-                            $('#form-sym-impact-other').val('');
-                        }
-
-                    } else if(conf.isPlan) {
-                        $('#form-plan-date').val(item.planDate || ''); $('#form-plan-start').val(item.planStartTime || ''); $('#form-plan-end').val(item.planEndTime || ''); $('#form-sent-plan-date').val(item.sentPlanDate || ''); $('#form-unplanned-impact').val(item.unplannedImpact || ''); $('#form-team-req').val(item.teamReq); $('#form-interruption-id-cm').val(item.cmId); $('#form-project').val(item.project); $('#form-interruption-item').val(item.itemCount); 
-                    } else {
-                        $('#form-action-date').val(item.actionDate ? item.actionDate.slice(0,16) : '');
-                    }
-                    $('#form-location').val(item.location); $('#form-remark').val(item.remark); if(item.nsRespond) $('#form-ns-respond').val(item.nsRespond).trigger('change');
-                    if(conf.isSub) { $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); $('#form-sub-name').val(item.subcontractor); $('#rr-next-name').text(item.subcontractor); $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); }
-                    else { $('#form-due-date').val(item.dueDate); $('#form-team-req').val(item.teamReq); $('#form-req-person').val(item.reqPerson); $('#form-ref-job-id').val(item.refJobId); $('#form-gps').val(item.gps); }
-                    if(conf.isSub) $('#form-due-date-sub').val(item.dueDate);
-                    if(item.fileName) { $('#file-name-display').text(item.fileName); }
-                    if(item.fileUrl) { $('#existing-file-link').removeClass('hidden').find('a').attr('href', item.fileUrl); }
-                    $('#modal-title').html('<span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3"><i class="fa-solid fa-pen-to-square"></i></span> แก้ไขข้อมูล ' + conf.title); 
-                }
-            } else {
-                 generateNextInternalId().then(newId => { $('#form-internal-id').val(newId); $('#display-internal-id').text(newId); });
-                 
-                 if(conf.isSub) { $('.rr-label.text-brand-600').text('ทีมที่ได้รับงานนี้ (Current)'); }
-                 $('#modal-title').html('<span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3"><i class="fa-solid fa-plus"></i></span> บันทึกงานใหม่ ' + conf.title);
-                 $('#file-name-display').text('คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่'); $('#existing-file-link').addClass('hidden');
-            }
-            $('#assignment-modal').removeClass('hidden'); 
-        };
-
-        window.closeModal = function() { $('#assignment-modal').addClass('hidden'); };
-        window.toggleSidebar = function() { const s=document.getElementById('sidebar'); s.classList.toggle('-translate-x-full'); document.getElementById('sidebar-overlay').classList.toggle('hidden'); };
-        
-        window.toggleDesktopSidebar = function() {
-            const s = document.getElementById('sidebar');
-            const btn = document.getElementById('desktop-toggle-btn');
-            
-            if (s.classList.contains('lg:w-0')) {
-                s.classList.remove('lg:w-0', 'lg:overflow-hidden', 'lg:border-none');
-                btn.classList.remove('rotate-180');
-            } else {
-                s.classList.add('lg:w-0', 'lg:overflow-hidden', 'lg:border-none');
-                btn.classList.add('rotate-180');
-            }
-        };
-
-        window.toggleSubmenu = function(id, btn) { document.getElementById(id).classList.toggle('open'); btn.querySelector('.fa-chevron-down').classList.toggle('rotate-180'); };
-        
-        window.switchView = function(v) { currentView = v; updateView(); };
-        
-        window.updateView = function() { 
-            $('.view-section').addClass('hidden'); 
-            if(currentView==='dashboard_analytics') { $('#view-dashboard-analytics').removeClass('hidden'); renderDashboardCharts(); } 
-            else if(currentView==='sub_dashboard') { $('#view-sub-dashboard').removeClass('hidden'); renderSubDashboardCharts(); } 
-            else if(currentView==='summary_dashboard') { $('#view-summary-dashboard').removeClass('hidden'); renderSummaryDashboard(); } 
-            else if(currentView==='calendar') { 
-                $('#view-calendar').removeClass('hidden'); 
-                window.renderCalendar(currentMonth, currentYear); 
-            } 
-            else if(currentView==='setting') { $('#view-setting').removeClass('hidden'); renderSettings(); } 
-            else { 
-                currentCategoryFilter=currentView; 
-                $('#view-datatable').removeClass('hidden'); 
-                const config = menuConfig[currentCategoryFilter];
-                
-                // Hide all dashboards first
-                $('#sub-dashboard, #team-dashboard, #plan-dashboard, #summary-plan-dashboard').addClass('hidden');
-
-                if (config && config.isSub) { 
-                    $('#sub-dashboard').removeClass('hidden'); 
-                    updateDashboard(); 
-                } 
-                else if (currentCategoryFilter === 'summary_plan') { 
-                    // Show Summary Plan Job List Dashboard
-                    $('#summary-plan-dashboard').removeClass('hidden'); 
-                    updateDashboard();
-                } 
-                else if (config && config.isPlan) { 
-                    $('#plan-dashboard').removeClass('hidden'); 
-                    updateDashboard(); 
-                } 
-                else if (config && config.jobTypeKey === 'team') { 
-                    $('#team-dashboard').removeClass('hidden'); 
-                    updateDashboard(); 
-                } 
-                
-                renderTable(); 
-            }
-            $('.nav-item').removeClass('bg-brand-50 text-brand-600 font-semibold active-nav');
-            if(currentView === 'summary_plan' || currentView === 'summary_dashboard') {
-                 $('#summary-menu').addClass('open');
-                 $(`a[data-view="${currentView}"]`).addClass('bg-brand-50 text-brand-600 font-semibold active-nav');
-            } else {
-                 $(`a[data-view="${currentView}"]`).addClass('bg-brand-50 text-brand-600 font-semibold active-nav');
-            }
-        };
-
-        window.updateDashboard = function() {
-             const data = assignments.filter(a => a.category === currentCategoryFilter);
-             
-             if(currentCategoryFilter === 'plan_interruption') {
-                 const counts = { new:0, process:0, complete:0, update_fms:0, cancel:0 };
-                 data.forEach(a => { const s = a.status || 'new'; if(counts[s] !== undefined) counts[s]++; });
-                 $('#plan-count-new').text(counts.new); $('#plan-count-process').text(counts.process); $('#plan-count-complete').text(counts.complete); $('#plan-count-updatefms').text(counts.update_fms); $('#plan-count-cancel').text(counts.cancel);
-             } else if(currentCategoryFilter === 'summary_plan') {
-                 // UPDATE SUMMARY PLAN JOB LIST DASHBOARD
-                 const counts = { new:0, process:0, complete:0, cancel:0 };
-                 data.forEach(a => { 
-                     let s = a.status || 'new';
-                     // Map finish to complete for this dashboard
-                     if(s === 'finish') s = 'complete'; 
-                     if(counts[s] !== undefined) counts[s]++; 
-                 });
-                 $('#sum-list-new').text(counts.new); 
-                 $('#sum-list-process').text(counts.process); 
-                 $('#sum-list-complete').text(counts.complete); 
-                 $('#sum-list-cancel').text(counts.cancel);
-             } else {
-                 // ... existing logic for other dashboards ...
-                 const counts = { new:0, process:0, assign:0, approve:0, finish:0, complete:0, cancel:0 };
-                 const costs = { new:0, process:0, assign:0, approve:0, finish:0, complete:0, cancel:0 };
-                 let grandTotal = 0;
-                 data.forEach(a => { const s = a.status || 'new'; if(counts[s] !== undefined) counts[s]++; const cost = Number(a.expenses || 0); if(costs[s] !== undefined) costs[s] += cost; grandTotal += cost; });
-                 if(menuConfig[currentCategoryFilter]?.isSub) {
-                    $('#sub-count-new').text(counts.new); $('#sub-cost-new').text(costs.new.toLocaleString() + ' ฿');
-                    $('#sub-count-process').text(counts.process); $('#sub-cost-process').text(costs.process.toLocaleString() + ' ฿');
-                    $('#sub-count-assign').text(counts.assign); $('#sub-cost-assign').text(costs.assign.toLocaleString() + ' ฿');
-                    $('#sub-count-approve').text(counts.approve); $('#sub-cost-approve').text(costs.approve.toLocaleString() + ' ฿');
-                    $('#sub-count-finish').text(counts.finish); $('#sub-cost-finish').text(costs.finish.toLocaleString() + ' ฿');
-                    $('#sub-count-cancel').text(counts.cancel); $('#sub-cost-cancel').text(costs.cancel.toLocaleString() + ' ฿');
-                    $('#table-grand-total').text('Total: ' + grandTotal.toLocaleString() + ' ฿').removeClass('hidden');
-                 } else {
-                    $('#table-grand-total').addClass('hidden');
-                    $('#team-count-new').text(counts.new); $('#team-count-process').text(counts.process); $('#team-count-complete').text(counts.finish + counts.complete); $('#team-count-cancel').text(counts.cancel);
-                 }
-             }
-        };
-
-        window.renderTable = function() { 
-            const tbody = document.getElementById("table-body"); if(!tbody) return;
-            const sv = $('#search-input').val().toLowerCase(), fs = $('#filter-status').val();
-            const th = document.getElementById("table-header-row");
-            const config = menuConfig[currentCategoryFilter];
-            const thClass = "p-3 text-center align-middle whitespace-normal break-words font-semibold text-gray-700 bg-gray-50 border-b border-gray-200 min-w-[80px]";
-            let cols = `<th class="${thClass}">Job ID</th>`;
             
             if (currentCategoryFilter === 'summary_plan') {
                 // Custom columns for Summary Plan Job List
@@ -1267,6 +1360,11 @@
             }
             $('#pagination-info').text(`Showing ${Math.min(start+1, total)}-${Math.min(start+pageData.length, total)} of ${total}`);
             $('#pagination-controls').html(`<button onclick="changePage(${Math.max(1, currentPage-1)})" class="px-2 border rounded"><</button><button onclick="changePage(${Math.min(Math.ceil(total/rowsPerPage), currentPage+1)})" class="px-2 border rounded">></button>`);
+        };
+
+        window.renderSettings = function() {
+            const list = $('#list-subcontractors'); list.empty(); const subs = masterData.subcontractors || masterData.Subcontractors || []; subs.forEach(i => list.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('subcontractors', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
+            const list2 = $('#list-nsRespond'); list2.empty(); const ns = masterData.nsRespond || masterData.NsRespond || []; ns.forEach(i => list2.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('nsRespond', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
         };
 
         window.getActionButtons = function(item, isSub, isPlan) {
@@ -1433,6 +1531,182 @@
             });
         };
 
+        window.actionReceivePlan = function(id) { window.updateStatus(id, 'process', { receiveDate: new Date().toISOString() }); };
+        window.actionCompletePlan = function(id) { Swal.fire({ title: 'ยืนยันงานเสร็จสิ้น?', text: "ต้องการเปลี่ยนสถานะเป็น Complete ใช่หรือไม่", icon: 'question', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'ตกลง (Yes)' }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'complete', { completeDate: new Date().toISOString() }); } }); };
+        window.actionUpdateFMS = function(id) { Swal.fire({ title: 'Update FMS', html: '<label class="block text-left text-sm mb-1">วันที่อัปเดต (Date)</label><input type="date" id="fms-date" class="swal2-input">', showCancelButton: true, preConfirm: () => { const d = document.getElementById('fms-date').value; if (!d) Swal.showValidationMessage('กรุณาใส่วันที่'); return d; } }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'update_fms', { fmsDate: result.value }); } }); };
+        window.actionCancelPlan = function(id) { const ops = (masterData.nsRespond || []).map(n => `<option value="${n}">${n}</option>`).join(''); Swal.fire({ title: 'Cancel Job', html: `<div class="text-left"><label class="text-sm font-bold text-gray-700">ผู้แจ้งยกเลิก (NS Respond)</label><select id="cancel-ns" class="swal2-select w-full m-0 mb-3 border border-gray-300 rounded p-2"><option value="">เลือกชื่อ...</option>${ops}</select><label class="text-sm font-bold text-gray-700">สาเหตุการยกเลิก (Reason)</label><input id="cancel-reason" class="swal2-input m-0 w-full" placeholder="ระบุสาเหตุ..."></div>`, showCancelButton: true, confirmButtonColor: '#ef4444', preConfirm: () => { const ns = document.getElementById('cancel-ns').value; const reason = document.getElementById('cancel-reason').value; if (!ns) Swal.showValidationMessage('กรุณาเลือกชื่อผู้แจ้งยกเลิก'); return { ns, reason }; } }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'cancel', { cancelBy: result.value.ns, cancelReason: result.value.reason, cancelDate: new Date().toISOString() }); } }); };
+
+        window.openModal = function(id = null) {
+            $('#assignment-form')[0].reset(); $('#doc-id').val(''); $('.select2').val(null).trigger('change');
+            if(!menuConfig[currentCategoryFilter] && currentCategoryFilter !== 'summary_dashboard') currentCategoryFilter = 'team'; 
+            
+            let targetCat = currentCategoryFilter === 'summary_dashboard' ? 'summary_plan' : currentCategoryFilter;
+            const conf = menuConfig[targetCat];
+            window.renderDropdowns();
+            $('.group-sub, .plan-only, .team-only, .not-plan-only, .summary-plan-only').addClass('hidden');
+            $('.summary-plan-hide').removeClass('hidden'); 
+            
+            // Reset Special Job View
+            $('#rr-normal-view').removeClass('hidden');
+            $('#rr-special-view').addClass('hidden');
+            $('#form-manual-sub').empty().append('<option value="">เลือกผู้รับเหมา...</option>');
+
+            if(targetCat === 'summary_plan') {
+                $('#form-agency').removeAttr('required');
+                $('#label-agency').html('Agency Inf.'); 
+            } else {
+                $('#form-agency').attr('required', 'required');
+                $('#label-agency').html('Agency Inf. <span class="text-red-500">*</span>');
+            }
+
+            if(targetCat === 'summary_plan' && !id) $('#summary-copy-actions').removeClass('hidden'); else $('#summary-copy-actions').addClass('hidden');
+            
+            if(conf.isSub) { 
+                $('.group-sub').removeClass('hidden'); 
+                $('.not-plan-only').removeClass('hidden'); 
+                
+                // Populate manual sub list for Special Job
+                const subs = masterData.subcontractors || masterData.Subcontractors || [];
+                subs.forEach(s => $('#form-manual-sub').append(new Option(s, s)));
+
+                if(!id) {
+                    $('#rr-action-buttons').show();
+                    fetchRoundRobinState(); 
+                } else {
+                    $('#rr-action-buttons').hide();
+                }
+            } else if(targetCat === 'summary_plan') { 
+                $('.summary-plan-only').removeClass('hidden'); 
+                $('.summary-plan-hide').addClass('hidden'); 
+            } else if(conf.isPlan) { 
+                $('.plan-only').removeClass('hidden'); 
+                $('.not-plan-only').addClass('hidden'); 
+            } else { 
+                $('.team-only').removeClass('hidden'); 
+                $('.not-plan-only').removeClass('hidden'); 
+            }
+            
+            if(id) { 
+                const item = assignments.find(a => a.id === id); 
+                if(item) { 
+                    $('#doc-id').val(item.id); $('#form-internal-id').val(item.internalId);
+                    $('#form-job-type').val(item.jobType); $('#form-desc').val(item.description); $('#form-agency').val(item.agency); 
+                    
+                    // Trigger change to handle Special Job view if editing
+                    if(conf.isSub && item.jobType === 'Special Job') {
+                        $('#rr-normal-view').addClass('hidden');
+                        $('#rr-special-view').removeClass('hidden');
+                        $('#form-manual-sub').val(item.subcontractor);
+                    }
+
+                    if (targetCat === 'summary_plan') {
+                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.gpsEnd); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); 
+                        
+                        const impactVal = item.symImpact;
+                        if(impactVal && impactVal !== 'Impact' && impactVal !== 'Non Impact' && impactVal !== 'Other' && impactVal.trim() !== '') {
+                            $('#form-sym-impact').val('Other').trigger('change');
+                            $('#form-sym-impact-other').val(impactVal);
+                        } else if (impactVal === 'Other') {
+                             $('#form-sym-impact').val('Other').trigger('change');
+                        } else {
+                            $('#form-sym-impact').val(impactVal).trigger('change');
+                            $('#form-sym-impact-other').val('');
+                        }
+
+                    } else if(conf.isPlan) {
+                        $('#form-plan-date').val(item.planDate || ''); $('#form-plan-start').val(item.planStartTime || ''); $('#form-plan-end').val(item.planEndTime || ''); $('#form-sent-plan-date').val(item.sentPlanDate || ''); $('#form-unplanned-impact').val(item.unplannedImpact || ''); $('#form-team-req').val(item.teamReq); $('#form-interruption-id-cm').val(item.cmId); $('#form-project').val(item.project); $('#form-interruption-item').val(item.itemCount); 
+                    } else {
+                        $('#form-action-date').val(item.actionDate ? item.actionDate.slice(0,16) : '');
+                    }
+                    $('#form-location').val(item.location); $('#form-remark').val(item.remark); if(item.nsRespond) $('#form-ns-respond').val(item.nsRespond).trigger('change');
+                    if(conf.isSub) { $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); $('#form-sub-name').val(item.subcontractor); $('#rr-next-name').text(item.subcontractor); $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); }
+                    else { $('#form-due-date').val(item.dueDate); $('#form-team-req').val(item.teamReq); $('#form-req-person').val(item.reqPerson); $('#form-ref-job-id').val(item.refJobId); $('#form-gps').val(item.gps); }
+                    if(conf.isSub) $('#form-due-date-sub').val(item.dueDate);
+                    if(item.fileName) { $('#file-name-display').text(item.fileName); }
+                    if(item.fileUrl) { $('#existing-file-link').removeClass('hidden').find('a').attr('href', item.fileUrl); }
+                    $('#modal-title').html('<span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3"><i class="fa-solid fa-pen-to-square"></i></span> แก้ไขข้อมูล ' + conf.title); 
+                }
+            } else {
+                 generateNextInternalId().then(newId => { $('#form-internal-id').val(newId); $('#display-internal-id').text(newId); });
+                 
+                 if(conf.isSub) { $('.rr-label.text-brand-600').text('ทีมที่ได้รับงานนี้ (Current)'); }
+                 $('#modal-title').html('<span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3"><i class="fa-solid fa-plus"></i></span> บันทึกงานใหม่ ' + conf.title);
+                 $('#file-name-display').text('คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่'); $('#existing-file-link').addClass('hidden');
+            }
+            $('#assignment-modal').removeClass('hidden'); 
+        };
+
+        window.closeModal = function() { $('#assignment-modal').addClass('hidden'); };
+        window.toggleSidebar = function() { const s=document.getElementById('sidebar'); s.classList.toggle('-translate-x-full'); document.getElementById('sidebar-overlay').classList.toggle('hidden'); };
+        
+        window.toggleDesktopSidebar = function() {
+            const s = document.getElementById('sidebar');
+            const btn = document.getElementById('desktop-toggle-btn');
+            
+            if (s.classList.contains('lg:w-0')) {
+                s.classList.remove('lg:w-0', 'lg:overflow-hidden', 'lg:border-none');
+                btn.classList.remove('rotate-180');
+            } else {
+                s.classList.add('lg:w-0', 'lg:overflow-hidden', 'lg:border-none');
+                btn.classList.add('rotate-180');
+            }
+        };
+
+        window.toggleSubmenu = function(id, btn) { document.getElementById(id).classList.toggle('open'); btn.querySelector('.fa-chevron-down').classList.toggle('rotate-180'); };
+        
+        window.switchView = function(v) { currentView = v; updateView(); };
+        
+        window.updateView = function() { 
+            $('.view-section').addClass('hidden'); 
+            if(currentView==='dashboard_analytics') { $('#view-dashboard-analytics').removeClass('hidden'); renderDashboardCharts(); } 
+            else if(currentView==='sub_dashboard') { $('#view-sub-dashboard').removeClass('hidden'); renderSubDashboardCharts(); } 
+            else if(currentView==='summary_dashboard') { $('#view-summary-dashboard').removeClass('hidden'); renderSummaryDashboard(); } 
+            else if(currentView==='calendar') { 
+                $('#view-calendar').removeClass('hidden'); 
+                window.renderCalendar(); 
+            } 
+            else if(currentView==='setting') { $('#view-setting').removeClass('hidden'); renderSettings(); } 
+            else if(currentView==='link_support') { 
+                $('#view-link-support').removeClass('hidden'); 
+                renderLinkSupport(); 
+            }
+            else { 
+                currentCategoryFilter=currentView; 
+                $('#view-datatable').removeClass('hidden'); 
+                const config = menuConfig[currentCategoryFilter];
+                
+                // Hide all dashboards first
+                $('#sub-dashboard, #team-dashboard, #plan-dashboard, #summary-plan-dashboard').addClass('hidden');
+
+                if (config && config.isSub) { 
+                    $('#sub-dashboard').removeClass('hidden'); 
+                    updateDashboard(); 
+                } 
+                else if (currentCategoryFilter === 'summary_plan') { 
+                    // Show Summary Plan Job List Dashboard
+                    $('#summary-plan-dashboard').removeClass('hidden'); 
+                    updateDashboard();
+                } 
+                else if (config && config.isPlan) { 
+                    $('#plan-dashboard').removeClass('hidden'); 
+                    updateDashboard(); 
+                } 
+                else if (config && config.jobTypeKey === 'team') { 
+                    $('#team-dashboard').removeClass('hidden'); 
+                    updateDashboard(); 
+                } 
+                
+                renderTable(); 
+            }
+            $('.nav-item').removeClass('bg-brand-50 text-brand-600 font-semibold active-nav');
+            if(currentView === 'summary_plan' || currentView === 'summary_dashboard') {
+                 $('#summary-menu').addClass('open');
+                 $(`a[data-view="${currentView}"]`).addClass('bg-brand-50 text-brand-600 font-semibold active-nav');
+            } else {
+                 $(`a[data-view="${currentView}"]`).addClass('bg-brand-50 text-brand-600 font-semibold active-nav');
+            }
+        };
+
         async function fetchRoundRobinState() { if (!menuConfig[currentCategoryFilter]?.isSub) return; const subs = masterData.subcontractors || masterData.Subcontractors || []; if (subs.length === 0) { $('#rr-next-name').text('No Data'); return; } const rr = masterData.rrIndexes || {}; const catData = rr[currentCategoryFilter] || { index: 0, lastJob: '-' }; const idx = catData.index % subs.length; const prev = (idx - 1 + subs.length) % subs.length; $('#rr-prev-name').text(subs[prev]); $('#rr-prev-job').text(`Job: ${catData.lastJob}`); $('#rr-next-name').text(subs[idx]); $('#form-sub-name').val(subs[idx]); }
         async function updateRoundRobinIndex(isSkip, jobName) { const k = `rrIndexes.${currentCategoryFilter}`; const next = (masterData.rrIndexes?.[currentCategoryFilter]?.index || 0) + 1; await getSettingsRef().update({[k]: {index: next, lastJob: jobName}}).catch(() => getSettingsRef().set({rrIndexes:{[currentCategoryFilter]:{index:next, lastJob:jobName}}}, {merge:true})); fetchRoundRobinState(); }
         
@@ -1550,7 +1824,7 @@
                    <div class="font-bold text-lg border-b pb-2 mb-3 text-brand-600 flex items-center"><i class="fa-solid fa-clipboard-check mr-2"></i> รายการงานใหม่ (${conf.title})</div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-regular fa-clock mr-1"></i> วันที่บันทึก :</div><div class="col-span-2">${createdStr}</div></div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-fingerprint mr-1"></i> Job ID :</div><div class="col-span-2 font-mono font-bold text-gray-800">${item.internalId}</div></div>
-                   <div class="grid grid-cols-3 gap-1 items-center"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-helmet-safety mr-1"></i> ผู้รับเหมา :</div><div class="col-span-2"><span class="border-2 border-red-500 text-red-600 font-bold px-2 py-0.5 rounded bg-red-50 inline-block">${item.subcontractor || '-'}</span></div></div>
+                   <div class="grid grid-cols-3 gap-1 items-center"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-helmet-safety mr-1"></i> ผู้รับเหมา :</div><div class="col-span-2"><span class="border-2 border-red-500 text-red-600 font-bold px-2 py-0.5 rounded bg-red-50 inline-block shadow-sm">${item.subcontractor || '-'}</span></div></div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> ประเภทงาน :</div><div class="col-span-2">${item.jobType}</div></div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-align-left mr-1"></i> ชื่องาน :</div><div class="col-span-2">${item.description}</div></div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-solid fa-calendar-days mr-1"></i> ดำเนินการ :</div><div class="col-span-2 text-blue-600 font-medium">${actionDateStr}</div></div>
@@ -1609,4 +1883,3 @@
     </script>
 </body>
 </html>
-
