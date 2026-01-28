@@ -195,7 +195,7 @@
             <div id="view-summary-dashboard" class="view-section hidden w-full h-auto lg:h-full lg:overflow-y-auto overflow-visible pb-40">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
                     <div class="flex items-center gap-2 mb-1 w-full"><i class="fa-solid fa-chart-simple text-brand-500"></i><h3 class="font-bold text-gray-700">Summary Plan Analytics</h3></div>
-                    <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Job Type</label><select id="sum-dash-jobtype" onchange="renderSummaryDashboard()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"><option value="all">ทั้งหมด (All)</option><option value="MEA">MEA</option><option value="PEA">PEA</option><option value="Underground">Underground</option><option value="Other">Other</option></select></div>
+                    <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Job Type</label><select id="sum-dash-jobtype" onchange="renderSummaryDashboard()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"><option value="all">ทั้งหมด (All)</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา (Date Range)</label><div class="flex gap-2"><input type="date" id="sum-dash-start" onchange="renderSummaryDashboard()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="sum-dash-end" onchange="renderSummaryDashboard()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
                     <div class="w-full sm:w-auto ml-auto flex gap-2">
                         <button onclick="renderSummaryDashboard()" class="px-4 py-2 bg-brand-500 text-white rounded-lg text-sm hover:bg-brand-600 shadow-md"><i class="fa-solid fa-sync mr-1"></i> Refresh</button>
@@ -1854,7 +1854,14 @@
             $('#form-file').change(function(e) { $('#file-name-display').text(e.target.files[0] ? e.target.files[0].name : 'Click to upload'); }); 
             document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar); 
             ['#form-job-type', '#form-agency', '#form-team-req'].forEach(id => { $(id).change(function() { if($(this).val() === 'Other') $(id + '-other').addClass('show'); else $(id + '-other').removeClass('show'); }); }); 
-            
+
+			 // Auto-populate Summary Dashboard Job Type Filter
+            const sumDashSelect = $('#sum-dash-jobtype');
+            if(sumDashSelect.length) {
+                CONST_DATA.jobTypes.summary_plan.forEach(t => {
+                    sumDashSelect.append(new Option(t, t));
+                });
+            }
             // Logic เปลี่ยนกล่อง Round Robin ตาม Job Type
             $('#form-job-type').change(function() {
                 const val = $(this).val();
@@ -1883,3 +1890,4 @@
     </script>
 </body>
 </html>
+
