@@ -326,7 +326,17 @@
                             <button onclick="changeCalendarPeriod(1)" class="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-600 transition flex items-center justify-center border border-gray-200 shadow-sm"><i class="fa-solid fa-chevron-right"></i></button>
                         </div>
                         
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap justify-end">
+                            <!-- Category Filter for Calendar -->
+                            <select id="calendar-filter-category" onchange="renderCalendar()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-brand-500 bg-white shadow-sm text-gray-700">
+                                <option value="all">งานทั้งหมด (All)</option>
+                                <option value="plan_interruption">Interruption Plan</option>
+                                <option value="team">Interruption Team</option>
+                                <option value="sub_preventive">Sub: Preventive</option>
+                                <option value="sub_reroute">Sub: Reroute</option>
+                                <option value="sub_reconfigure">Sub: Reconfigure</option>
+                            </select>
+
                             <!-- View Toggle Buttons -->
                             <div class="bg-gray-100 p-1 rounded-lg flex text-sm font-medium text-gray-500">
                                 <button onclick="setCalendarView('month')" id="btn-view-month" class="px-4 py-1.5 rounded-md transition-all shadow-sm bg-white text-brand-600">Month</button>
@@ -447,50 +457,90 @@
 
             <!-- VIEW: LINK SUPPORT (NEW) -->
             <div id="view-link-support" class="view-section hidden flex-1 flex flex-col overflow-auto">
-                <div class="max-w-5xl mx-auto w-full p-4 md:p-6 space-y-6">
+                <div class="max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                         <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                             <span class="bg-brand-100 text-brand-600 p-2 rounded-lg mr-3 shadow-sm"><i class="fa-solid fa-link"></i></span> Link Support Center
                         </h3>
                         
-                        <!-- Add Form -->
+                        <!-- Add/Edit Form -->
                         <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-6 shadow-inner">
-                            <label class="block text-sm font-bold text-gray-600 mb-3 uppercase tracking-wide">เพิ่มลิงก์ใหม่ (Add New Link)</label>
-                            <div class="flex flex-col md:flex-row gap-3">
-                                <div class="flex-1">
+                            <label class="block text-sm font-bold text-gray-600 mb-3 uppercase tracking-wide">จัดการลิงก์ (Manage Links)</label>
+                            
+                            <!-- Hidden input to store index for editing -->
+                            <input type="hidden" id="ls-edit-index" value="">
+
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs text-gray-500 mb-1">ชื่อเว็บไซต์ (Name) <span class="text-red-500">*</span></label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-tag"></i></div>
-                                        <input type="text" id="ls-name" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ชื่อเว็บไซต์ (Link Name)">
+                                        <input type="text" id="ls-name" class="w-full pl-10 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ชื่อเว็บ...">
                                     </div>
                                 </div>
-                                <div class="flex-[2]">
+                                <div class="md:col-span-3">
+                                    <label class="block text-xs text-gray-500 mb-1">URL (Address) <span class="text-red-500">*</span></label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-globe"></i></div>
-                                        <input type="url" id="ls-url" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="URL (เช่น https://www.google.com)">
+                                        <input type="url" id="ls-url" class="w-full pl-10 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="https://...">
                                     </div>
                                 </div>
-                                <button onclick="addLinkItem()" class="bg-brand-500 text-white px-6 py-2.5 rounded-lg hover:bg-brand-600 shadow-md transition font-medium whitespace-nowrap flex items-center justify-center">
-                                    <i class="fa-solid fa-plus mr-2"></i> เพิ่มรายการ
-                                </button>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs text-gray-500 mb-1">ประเภท (Type) <span class="text-red-500">*</span></label>
+                                    <select id="ls-type" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white">
+                                        <option value="">เลือก...</option>
+                                        <option value="Site Access">Site Access</option>
+                                        <option value="Link Support">Link Support</option>
+                                        <option value="Link File Shared">Link File Shared</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input type="text" id="ls-type-other" class="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 hidden bg-white" placeholder="ระบุประเภทอื่นๆ...">
+                                </div>
+                                <div class="md:col-span-3">
+                                    <label class="block text-xs text-gray-500 mb-1">รายละเอียด (Detail)</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-circle-info"></i></div>
+                                        <input type="text" id="ls-detail" class="w-full pl-10 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="คำอธิบายเพิ่มเติม...">
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2 flex gap-2 mt-6 md:mt-0 items-end h-full pb-0.5">
+                                    <button onclick="saveLinkItem()" id="btn-save-link" class="flex-1 bg-brand-500 text-white px-4 py-2 rounded-lg hover:bg-brand-600 shadow-md transition font-medium text-sm flex items-center justify-center h-[38px]">
+                                        <i class="fa-solid fa-plus mr-1"></i> เพิ่ม
+                                    </button>
+                                    <button onclick="cancelLinkEdit()" id="btn-cancel-link" class="hidden bg-gray-300 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-400 shadow-sm transition font-medium text-sm h-[38px]">
+                                        ยกเลิก
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Search Bar -->
-                        <div class="mb-4">
-                            <div class="relative">
+                        <!-- Search Bar & Filter -->
+                        <div class="mb-4 flex flex-col md:flex-row gap-3">
+                            <div class="flex-1 relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></div>
-                                <input type="text" id="ls-search" oninput="renderLinkSupport()" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ค้นหาชื่อเว็บไซต์ หรือ URL...">
+                                <input type="text" id="ls-search" oninput="renderLinkSupport()" class="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" placeholder="ค้นหาชื่อเว็บไซต์, URL, ประเภท หรือรายละเอียด...">
+                            </div>
+                            <div class="w-full md:w-48">
+                                <select id="ls-filter-type" onchange="renderLinkSupport()" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white">
+                                    <option value="all">ทุกประเภท (All Types)</option>
+                                    <option value="Site Access">Site Access</option>
+                                    <option value="Link Support">Link Support</option>
+                                    <option value="Link File Shared">Link File Shared</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
                         </div>
 
                         <!-- Link List Table -->
-                        <div class="overflow-hidden border border-gray-200 rounded-xl shadow-sm">
+                        <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/3">ชื่อเว็บไซต์ (Name)</th>
-                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ที่อยู่ URL (Address)</th>
-                                        <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider w-24">จัดการ</th>
+                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/5">ชื่อเว็บไซต์ (Name)</th>
+                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/5">URL (Address)</th>
+                                        <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider w-1/6">Link Type</th>
+                                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">รายละเอียด (Detail)</th>
+                                        <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider w-28">จัดการ</th>
                                     </tr>
                                 </thead>
                                 <tbody id="list-link-support" class="bg-white divide-y divide-gray-200">
@@ -685,7 +735,7 @@
             jobTypes: { 
                 team: ["Improvement", "Create Route", "Meeting", "Team Daily", "Support", "Other"], 
                 plan: ["Interruption OFC", "Interruption Equipment", "Information", "Other"], 
-                summary_plan: ["MEA", "PEA","MOI","Sky Trai","Bangkok Metropolis","Department Of Highways","Landlord","Underground","Fiber Infra Sharing", "Other"],
+                summary_plan: ["MEA", "PEA","MOI","Sky Train","Bangkok Metropolis","Department Of Highways","Landlord","Underground","Fiber Infra Sharing", "Other"],
                 // แก้ไข: เพิ่ม "Special Job" ในรายการ
                 preventive: ["Preventive มัดรวบสาย", "Preventive ย้ายแนวสาย", "Preventive เข้าคอนใหม่", "Preventive ติดสติ๊กเกอร์", "Preventive รื้อถอนสายตาย", "Preventive Stand by", "Preventive ทำความสะอาดSite", "Special Job", "Other"], 
                 reroute: ["Reroute Project", "Underground", "MOI", "Reconfig for Reroute", "Special Job", "Other"], 
@@ -752,8 +802,21 @@
 
             // Helper to render jobs
             const getJobsForDate = (dateStr) => {
-                return assignments.filter(a => (a.actionDate||'').startsWith(dateStr) && a.status!=='new' && a.status!=='cancel' && a.jobType!=='Team Daily' && a.category !== 'summary_plan')
-                    .sort((a,b) => (a.actionDate||'').localeCompare(b.actionDate||''));
+                const catFilter = $('#calendar-filter-category').val();
+                
+                return assignments.filter(a => {
+                    const isDateMatch = (a.actionDate||'').startsWith(dateStr);
+                    const isStatusValid = a.status!=='new' && a.status!=='cancel';
+                    const isTypeValid = a.jobType!=='Team Daily' && a.category !== 'summary_plan';
+                    
+                    if (!isDateMatch || !isStatusValid || !isTypeValid) return false;
+                    
+                    // Filter by Category
+                    if (catFilter && catFilter !== 'all') {
+                        return a.category === catFilter;
+                    }
+                    return true;
+                }).sort((a,b) => (a.actionDate||'').localeCompare(b.actionDate||''));
             };
 
             const createJobHTML = (j, isCompact = true) => {
@@ -904,39 +967,49 @@
             
             // Search Filter
             const searchTerm = $('#ls-search').val() ? $('#ls-search').val().toLowerCase() : '';
-            if(searchTerm) {
-                links = links.filter(l => l.name.toLowerCase().includes(searchTerm) || l.url.toLowerCase().includes(searchTerm));
-            }
+            // Type Filter
+            const filterType = $('#ls-filter-type').val();
+
+            links = links.filter(l => {
+                const matchesSearch = 
+                    (l.name && l.name.toLowerCase().includes(searchTerm)) || 
+                    (l.url && l.url.toLowerCase().includes(searchTerm)) ||
+                    (l.type && l.type.toLowerCase().includes(searchTerm)) ||
+                    (l.detail && l.detail.toLowerCase().includes(searchTerm));
+                
+                const matchesType = (filterType === 'all' || !filterType) ? true : (l.type === filterType);
+                
+                return matchesSearch && matchesType;
+            });
             
             if (links.length === 0) {
                 $('#ls-empty-state').removeClass('hidden');
-                if(searchTerm) $('#ls-empty-state p').text('ไม่พบข้อมูลที่ค้นหา');
+                if(searchTerm || filterType !== 'all') $('#ls-empty-state p').text('ไม่พบข้อมูลที่ค้นหา');
                 else $('#ls-empty-state p').text('ยังไม่มีรายการลิงก์ในระบบ');
             } else {
                 $('#ls-empty-state').addClass('hidden');
                 
-                // IMPORTANT: We need to find the original index for delete to work correctly
                 const originalLinks = masterData.linkSupport || [];
                 
                 links.forEach((item) => {
-                    // Find index in the original array
-                    // Since objects are unique references in memory (unless modified deeply), indexOf should work.
-                    // However, to be safe with primitive values or recreated objects, we might iterate.
-                    // But here, masterData.linkSupport is the source of truth.
-                    // Let's rely on finding the object reference since we didn't deep clone.
                     let originalIndex = -1;
-                    
-                    // Simple search for the object in the original array
                     for(let i=0; i<originalLinks.length; i++) {
-                        if(originalLinks[i].name === item.name && originalLinks[i].url === item.url) {
+                        if(originalLinks[i].name === item.name && originalLinks[i].url === item.url && originalLinks[i].type === item.type) {
                             originalIndex = i;
                             break;
                         }
                     }
                     
+                    // Link Type Badge Color
+                    let badgeColor = 'bg-gray-100 text-gray-800';
+                    const t = item.type || '-';
+                    if(t === 'Site Access') badgeColor = 'bg-blue-100 text-blue-800';
+                    else if(t === 'Link Support') badgeColor = 'bg-purple-100 text-purple-800';
+                    else if(t === 'Link File Shared') badgeColor = 'bg-orange-100 text-orange-800';
+                    
                     const row = `
                         <tr class="hover:bg-gray-50 transition-colors group">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-500 mr-3 border border-brand-100">
                                         <i class="fa-solid fa-globe text-xs"></i>
@@ -945,11 +1018,20 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="${item.url}" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline flex items-center break-all">
+                                <a href="${item.url}" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 hover:underline block break-all line-clamp-2" title="${item.url}">
                                     ${item.url} <i class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-xs opacity-50"></i>
                                 </a>
                             </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${badgeColor}">${t}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm text-gray-500">${item.detail || '-'}</span>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button onclick="editLinkItem(${originalIndex})" class="text-gray-300 hover:text-blue-500 transition-colors p-1.5 rounded-md hover:bg-blue-50 mr-1" title="แก้ไข">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
                                 <button onclick="deleteLinkItem(${originalIndex})" class="text-gray-300 hover:text-red-500 transition-colors p-1.5 rounded-md hover:bg-red-50" title="ลบ">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
@@ -961,12 +1043,21 @@
             }
         };
 
-        window.addLinkItem = async function() {
+        window.saveLinkItem = async function() {
             const name = $('#ls-name').val().trim();
             let url = $('#ls-url').val().trim();
+            const detail = $('#ls-detail').val().trim();
+            let type = $('#ls-type').val();
             
-            if (!name || !url) {
-                Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อลิงก์และ URL ให้ครบถ้วน', 'warning');
+            if(type === 'Other') {
+                type = $('#ls-type-other').val().trim();
+                if(!type) type = 'Other'; // Fallback if empty
+            }
+
+            const editIndexStr = $('#ls-edit-index').val();
+            
+            if (!name || !url || !type) {
+                Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อ, URL และประเภทให้ครบถ้วน', 'warning');
                 return;
             }
 
@@ -974,28 +1065,79 @@
                 url = 'https://' + url;
             }
 
-            const newItem = { name, url };
+            const newItem = { name, url, type, detail };
             
             try {
                 const ref = getSettingsRef();
                 const doc = await ref.get();
+                
                 if (doc.exists) {
-                    await ref.update({ linkSupport: firebase.firestore.FieldValue.arrayUnion(newItem) });
+                    let currentLinks = doc.data().linkSupport || [];
+                    
+                    if (editIndexStr !== "") {
+                        const idx = parseInt(editIndexStr);
+                        if (idx >= 0 && idx < currentLinks.length) {
+                            currentLinks[idx] = newItem;
+                            await ref.update({ linkSupport: currentLinks });
+                            Swal.fire({ icon: 'success', title: 'แก้ไขข้อมูลเรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                        }
+                    } else {
+                        currentLinks.push(newItem);
+                        await ref.update({ linkSupport: currentLinks });
+                        Swal.fire({ icon: 'success', title: 'เพิ่มลิงก์เรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                    }
                 } else {
                     await ref.set({ linkSupport: [newItem] }, { merge: true });
+                    Swal.fire({ icon: 'success', title: 'เพิ่มลิงก์เรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
                 }
                 
-                $('#ls-name').val('');
-                $('#ls-url').val('');
-                Swal.fire({ icon: 'success', title: 'เพิ่มลิงก์เรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                cancelLinkEdit(); 
             } catch (error) {
-                console.error("Error adding link:", error);
+                console.error("Error saving link:", error);
                 Swal.fire('Error', 'บันทึกไม่สำเร็จ: ' + error.message, 'error');
             }
         };
 
+        window.editLinkItem = function(index) {
+            const links = masterData.linkSupport || [];
+            if (index >= 0 && index < links.length) {
+                const item = links[index];
+                
+                $('#ls-name').val(item.name);
+                $('#ls-url').val(item.url);
+                $('#ls-detail').val(item.detail || '');
+                $('#ls-edit-index').val(index);
+                
+                // Handle Type Selection
+                const predefinedTypes = ["Site Access", "Link Support", "Link File Shared"];
+                if (predefinedTypes.includes(item.type)) {
+                    $('#ls-type').val(item.type).trigger('change');
+                } else {
+                    $('#ls-type').val('Other').trigger('change');
+                    $('#ls-type-other').val(item.type);
+                }
+                
+                $('#btn-save-link').html('<i class="fa-solid fa-save mr-1"></i> บันทึก').removeClass('bg-brand-500 hover:bg-brand-600').addClass('bg-green-600 hover:bg-green-700');
+                $('#btn-cancel-link').removeClass('hidden');
+                
+                $('#ls-name').focus();
+            }
+        };
+
+        window.cancelLinkEdit = function() {
+            $('#ls-name').val('');
+            $('#ls-url').val('');
+            $('#ls-detail').val('');
+            $('#ls-type').val('').trigger('change');
+            $('#ls-type-other').val('');
+            $('#ls-edit-index').val('');
+            
+            $('#btn-save-link').html('<i class="fa-solid fa-plus mr-1"></i> เพิ่ม').removeClass('bg-green-600 hover:bg-green-700').addClass('bg-brand-500 hover:bg-brand-600');
+            $('#btn-cancel-link').addClass('hidden');
+        };
+
         window.deleteLinkItem = async function(index) {
-            if(index === -1) return; // Invalid index
+            if(index === -1) return;
             
             Swal.fire({
                 title: 'ยืนยันการลบ?',
@@ -1016,6 +1158,7 @@
                                 currentLinks.splice(index, 1);
                                 await ref.update({ linkSupport: currentLinks });
                                 Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                                if ($('#ls-edit-index').val() == index) cancelLinkEdit();
                             }
                         }
                     } catch (error) {
@@ -1023,6 +1166,54 @@
                     }
                 }
             });
+        };
+
+        // NEW: Robust Setting Render Function
+        window.renderSettings = function() {
+            const listSub = $('#list-subcontractors');
+            const listNs = $('#list-nsRespond');
+            
+            if (listSub.length === 0 || listNs.length === 0) return; // Safety check
+
+            listSub.empty();
+            listNs.empty();
+
+            // Handle case sensitivity and fallback
+            const subs = masterData.subcontractors || masterData.Subcontractors || [];
+            const ns = masterData.nsRespond || masterData.NsRespond || [];
+
+            if (subs.length === 0) {
+                listSub.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
+            } else {
+                subs.forEach(item => {
+                    // Determine key for removal
+                    const key = masterData.subcontractors ? 'subcontractors' : 'Subcontractors';
+                    listSub.append(`
+                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
+                            <span class="font-medium text-gray-700">${item}</span>
+                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </li>
+                    `);
+                });
+            }
+
+            if (ns.length === 0) {
+                listNs.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
+            } else {
+                ns.forEach(item => {
+                    const key = masterData.nsRespond ? 'nsRespond' : 'NsRespond';
+                    listNs.append(`
+                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
+                            <span class="font-medium text-gray-700">${item}</span>
+                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </li>
+                    `);
+                });
+            }
         };
 
         window.renderSummaryDashboard = function() {
@@ -1362,10 +1553,7 @@
             $('#pagination-controls').html(`<button onclick="changePage(${Math.max(1, currentPage-1)})" class="px-2 border rounded"><</button><button onclick="changePage(${Math.min(Math.ceil(total/rowsPerPage), currentPage+1)})" class="px-2 border rounded">></button>`);
         };
 
-        window.renderSettings = function() {
-            const list = $('#list-subcontractors'); list.empty(); const subs = masterData.subcontractors || masterData.Subcontractors || []; subs.forEach(i => list.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('subcontractors', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
-            const list2 = $('#list-nsRespond'); list2.empty(); const ns = masterData.nsRespond || masterData.NsRespond || []; ns.forEach(i => list2.append(`<li class="flex justify-between items-center bg-white border rounded px-2 py-1">${i}<button onclick="removeSettingItem('nsRespond', '${i}')" class="text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button></li>`));
-        };
+        // window.renderSettings ... (Refactored below)
 
         window.getActionButtons = function(item, isSub, isPlan) {
             // Special Logic for Summary Plan Job List
@@ -1818,7 +2006,7 @@
         window.updateStatus = function(id, status, extra) { $.LoadingOverlay("show"); getAssignmentsRef().doc(id).update({status: status, ...extra}).then(async () => { const item = assignments.find(a => a.id === id); if(item) { const u = {...item, status, ...extra}; const c = menuConfig[u.category]; if(c) await sendToSheet(u, c.sheetName); } $.LoadingOverlay("hide"); }).catch(e => { $.LoadingOverlay("hide"); Swal.fire('Error',e.message,'error'); }); };
         window.deleteAssignment = function(id) { Swal.fire({ title: 'Delete?', icon: 'warning', showCancelButton: true }).then((r) => { if (r.isConfirmed) getAssignmentsRef().doc(id).delete(); }); };
         window.viewDetail = function(id) { 
-            const item = assignments.find(a => a.id === id); if(!item) return; const nsInfo = extractNS(item.nsRespond); const conf = menuConfig[item.category]; const isSub = conf && conf.isSub; const isPlan = conf && conf.isPlan; const fileLink = item.fileUrl ? `<a href="${item.fileUrl}" target="_blank" class="text-blue-500 hover:underline break-all">${item.fileUrl}</a>` : '-'; const fileDisplay = (item.fileUrl && (item.fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || item.fileUrl.includes('googleusercontent'))) ? `<br><img src="${item.fileUrl}" class="mt-2 rounded-lg max-h-48 object-cover border border-gray-200" alt="Attached Image">` : ''; let nextSubName = '-'; if (isSub && masterData.subcontractors) { const rr = masterData.rrIndexes?.[item.category]?.index || 0; const subList = masterData.subcontractors || []; if (subList.length > 0) nextSubName = subList[rr % subList.length]; } const createdStr = item.createdAt ? fmtDate(item.createdAt) : '-'; const actionDateStr = fmtDate(item.actionDate); let html = `<div class="text-left text-sm space-y-3 font-prompt">`;
+            const item = assignments.find(a => a.id === id); if(!item) return; const nsInfo = extractNS(item.nsRespond); const conf = menuConfig[item.category]; const isSub = conf && conf.isSub; const isPlan = conf && conf.isPlan; const fileLink = item.fileUrl ? `<a href="${item.fileUrl}" target="_blank" class="text-blue-500 hover:underline break-all">${item.fileUrl}</a>` : '-'; const fileDisplay = (item.fileUrl && (item.fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || item.fileUrl.includes('googleusercontent') || item.fileUrl.includes('drive.google.com'))) ? `<br><img src="${item.fileUrl}" class="mt-2 rounded-lg max-h-48 object-cover border border-gray-200" alt="Attached Image">` : ''; let nextSubName = '-'; if (isSub && masterData.subcontractors) { const rr = masterData.rrIndexes?.[item.category]?.index || 0; const subList = masterData.subcontractors || []; if (subList.length > 0) nextSubName = subList[rr % subList.length]; } const createdStr = item.createdAt ? fmtDate(item.createdAt) : '-'; const actionDateStr = fmtDate(item.actionDate); let html = `<div class="text-left text-sm space-y-3 font-prompt">`;
              if (isSub) {
                 html += `
                    <div class="font-bold text-lg border-b pb-2 mb-3 text-brand-600 flex items-center"><i class="fa-solid fa-clipboard-check mr-2"></i> รายการงานใหม่ (${conf.title})</div>
@@ -1844,7 +2032,7 @@
         };
         window.showJobDetail = function(id) { window.viewDetail(id); };
         function fallbackCopyTextToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); const msg = successful ? 'successful' : 'unsuccessful'; Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกข้อความแล้ว', showConfirmButton: false, timer: 1500 }); } catch (err) { console.error('Fallback: Oops, unable to copy', err); } document.body.removeChild(textArea); }
-        async function initAuth() { try { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await auth.signInWithCustomToken(__initial_auth_token); } else { await auth.signInAnonymously(); } auth.onAuthStateChanged(user => { if(user) { $('#status-text').text('Online').parent().addClass('bg-green-100 text-green-700'); getAssignmentsRef().onSnapshot(snap => { assignments = []; snap.forEach(d => assignments.push({id:d.id, ...d.data()})); assignments.sort((a,b)=>(b.internalId||'').localeCompare(a.internalId||'')); window.updateView(); }, err => console.error("Snapshot Error:", err)); getSettingsRef().onSnapshot(doc => { if(doc.exists) { masterData = doc.data(); window.renderDropdowns(); window.renderSettings(); } else { initializeDatabase(false); } }, err => console.error("Settings Error:", err)); } }); } catch (e) { console.error("Auth Error:", e); Swal.fire('Connection Error', e.message, 'error'); } }
+        async function initAuth() { try { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await auth.signInWithCustomToken(__initial_auth_token); } else { await auth.signInAnonymously(); } auth.onAuthStateChanged(user => { if(user) { $('#status-text').text('Online').parent().addClass('bg-green-100 text-green-700'); getAssignmentsRef().onSnapshot(snap => { assignments = []; snap.forEach(d => assignments.push({id:d.id, ...d.data()})); assignments.sort((a,b)=>(b.internalId||'').localeCompare(a.internalId||'')); window.updateView(); }, err => console.error("Snapshot Error:", err)); getSettingsRef().onSnapshot(doc => { if(doc.exists) { masterData = doc.data(); window.renderDropdowns(); if(currentView === 'setting') window.renderSettings(); } else { initializeDatabase(false); } }, err => console.error("Settings Error:", err)); } }); } catch (e) { console.error("Auth Error:", e); Swal.fire('Connection Error', e.message, 'error'); } }
         
         $(document).ready(function() { 
             $('.select2').select2({ placeholder: "เลือกชื่อ", allowClear: true }); 
@@ -1854,14 +2042,15 @@
             $('#form-file').change(function(e) { $('#file-name-display').text(e.target.files[0] ? e.target.files[0].name : 'Click to upload'); }); 
             document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar); 
             ['#form-job-type', '#form-agency', '#form-team-req'].forEach(id => { $(id).change(function() { if($(this).val() === 'Other') $(id + '-other').addClass('show'); else $(id + '-other').removeClass('show'); }); }); 
-
-			 // Auto-populate Summary Dashboard Job Type Filter
+            
+            // Auto-populate Summary Dashboard Job Type Filter
             const sumDashSelect = $('#sum-dash-jobtype');
             if(sumDashSelect.length) {
                 CONST_DATA.jobTypes.summary_plan.forEach(t => {
                     sumDashSelect.append(new Option(t, t));
                 });
             }
+
             // Logic เปลี่ยนกล่อง Round Robin ตาม Job Type
             $('#form-job-type').change(function() {
                 const val = $(this).val();
@@ -1886,8 +2075,64 @@
                 if($(this).val() === 'Other') $('#form-sym-impact-other').addClass('show');
                 else $('#form-sym-impact-other').removeClass('show');
             });
+
+            // Link Support Type Toggle
+            $('#ls-type').change(function() {
+                if($(this).val() === 'Other') {
+                    $('#ls-type-other').removeClass('hidden').addClass('block').focus();
+                } else {
+                    $('#ls-type-other').addClass('hidden').removeClass('block');
+                }
+            });
         });
+        
+        // NEW: Robust Setting Render Function
+        window.renderSettings = function() {
+            const listSub = $('#list-subcontractors');
+            const listNs = $('#list-nsRespond');
+            
+            if (listSub.length === 0 || listNs.length === 0) return; // Safety check
+
+            listSub.empty();
+            listNs.empty();
+
+            // Handle case sensitivity and fallback
+            const subs = masterData.subcontractors || masterData.Subcontractors || [];
+            const ns = masterData.nsRespond || masterData.NsRespond || [];
+
+            if (subs.length === 0) {
+                listSub.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
+            } else {
+                subs.forEach(item => {
+                    // Determine key for removal
+                    const key = masterData.subcontractors ? 'subcontractors' : 'Subcontractors';
+                    listSub.append(`
+                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
+                            <span class="font-medium text-gray-700">${item}</span>
+                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </li>
+                    `);
+                });
+            }
+
+            if (ns.length === 0) {
+                listNs.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
+            } else {
+                ns.forEach(item => {
+                    const key = masterData.nsRespond ? 'nsRespond' : 'NsRespond';
+                    listNs.append(`
+                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
+                            <span class="font-medium text-gray-700">${item}</span>
+                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </li>
+                    `);
+                });
+            }
+        };
     </script>
 </body>
 </html>
-
