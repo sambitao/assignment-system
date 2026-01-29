@@ -118,13 +118,13 @@
                 <button onclick="toggleSubmenu('summary-menu', this)" class="w-full flex items-center justify-between p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all group">
                     <div class="flex items-center">
                         <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-file-contract text-lg group-hover:text-brand-500"></i></div>
-                        <span class="ml-3">Summary Plan</span>
+                        <span class="ml-3">Project Plan</span>
                     </div>
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-gray-400"></i>
                 </button>
                 <div id="summary-menu" class="submenu pl-4 space-y-1 mt-1">
                     <a href="#" onclick="switchView('summary_plan')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium" data-view="summary_plan"><i class="fa-solid fa-list mr-2 text-xs"></i>Job List</a>
-                    <a href="#" onclick="switchView('summary_dashboard')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium" data-view="summary_dashboard"><i class="fa-solid fa-chart-simple mr-2 text-xs"></i>Dashboard Summary</a>
+                    <a href="#" onclick="switchView('summary_dashboard')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium" data-view="summary_dashboard"><i class="fa-solid fa-chart-simple mr-2 text-xs"></i>Dashboard Project</a>
                 </div>
             </div>
 
@@ -158,7 +158,7 @@
                 <!-- Desktop Toggle Button -->
                 <button onclick="toggleDesktopSidebar()" id="desktop-toggle-btn" class="hidden lg:block text-gray-500 hover:text-brand-600 mr-4 focus:outline-none transition-transform duration-300"><i class="fa-solid fa-bars-staggered text-2xl"></i></button>
                 
-                <h2 id="page-title" class="text-xl font-bold text-gray-800"><span class="text-brand-500 mr-2">|</span> ปฏิทินงาน</h2>
+                <h2 id="page-title" class="text-xl font-bold text-gray-800"><span class="text-brand-500 mr-2">|</span>Assignment Interruption System</h2>
             </div>
             <div class="flex items-center space-x-4"><div class="flex flex-col items-end"><div id="db-status" class="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 flex items-center cursor-pointer hover:bg-gray-200 transition" onclick="testConnection()"><span class="indicator loading" id="status-dot"></span> <span id="status-text" class="font-medium">Connecting...</span></div></div><div class="h-10 w-10 bg-gradient-to-br from-brand-100 to-orange-200 rounded-full flex items-center justify-center text-brand-600 shadow-sm border border-white"><i class="fa-regular fa-user"></i></div></div>
         </header>
@@ -194,7 +194,7 @@
             <!-- VIEW: SUMMARY DASHBOARD (NEW) -->
             <div id="view-summary-dashboard" class="view-section hidden w-full h-auto lg:h-full lg:overflow-y-auto overflow-visible pb-40">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap gap-4 items-end">
-                    <div class="flex items-center gap-2 mb-1 w-full"><i class="fa-solid fa-chart-simple text-brand-500"></i><h3 class="font-bold text-gray-700">Summary Plan Analytics</h3></div>
+                    <div class="flex items-center gap-2 mb-1 w-full"><i class="fa-solid fa-chart-simple text-brand-500"></i><h3 class="font-bold text-gray-700">Project Plan Analytics</h3></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Job Type</label><select id="sum-dash-jobtype" onchange="renderSummaryDashboard()" class="w-full sm:w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500"><option value="all">ทั้งหมด (All)</option></select></div>
                     <div class="w-full sm:w-auto"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">ช่วงเวลา (Date Range)</label><div class="flex gap-2"><input type="date" id="sum-dash-start" onchange="renderSummaryDashboard()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="date" id="sum-dash-end" onchange="renderSummaryDashboard()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
                     <div class="w-full sm:w-auto ml-auto flex gap-2">
@@ -735,14 +735,14 @@
             jobTypes: { 
                 team: ["Improvement", "Create Route", "Meeting", "Team Daily", "Support", "Other"], 
                 plan: ["Interruption OFC", "Interruption Equipment", "Information", "Other"], 
-                summary_plan: ["MEA", "PEA","MOI","Sky Train","Bangkok Metropolis","Department Of Highways","Landlord","Underground","Fiber Infra Sharing", "Other"],
+                summary_plan: ["MEA", "PEA","MOI","Sky Trai","Bangkok Metropolis","Department Of Highways","Landlord","Underground","Fiber Infra Sharing", "Other"],
                 // แก้ไข: เพิ่ม "Special Job" ในรายการ
                 preventive: ["Preventive มัดรวบสาย", "Preventive ย้ายแนวสาย", "Preventive เข้าคอนใหม่", "Preventive ติดสติ๊กเกอร์", "Preventive รื้อถอนสายตาย", "Preventive Stand by", "Preventive ทำความสะอาดSite", "Special Job", "Other"], 
                 reroute: ["Reroute Project", "Underground", "MOI", "Reconfig for Reroute", "Special Job", "Other"], 
                 reconfigure: ["Reconfig high loss", "Reconfig New Route", "Special Job", "Other"] 
             } 
         };
-        const menuConfig = { 'plan_interruption': { title: 'Interruption Plan', isSub: false, isPlan: true, prefix: 'IP', jobTypeKey: 'plan', sheetName: 'Interruption Plan' }, 'summary_plan': { title: 'Summary Plan', isSub: false, isPlan: true, prefix: 'Sum', jobTypeKey: 'summary_plan', sheetName: 'Summary Plan' }, 'team': { title: 'Assignment Interruption Team', isSub: false, prefix: 'AI', jobTypeKey: 'team', sheetName: 'Interruption Team' }, 'sub_preventive': { title: 'Assignment Preventive', isSub: true, prefix: 'PVT', jobTypeKey: 'preventive', sheetName: 'Assignment Preventive' }, 'sub_reroute': { title: 'Assignment Reroute', isSub: true, prefix: 'RER', jobTypeKey: 'reroute', sheetName: 'Assignment Reroute' }, 'sub_reconfigure': { title: 'Assignment Reconfigure', isSub: true, prefix: 'REF', jobTypeKey: 'reconfigure', sheetName: 'Assignment Reconfigure' }, 'dashboard_analytics': { title: 'Dashboard Analytics', isSub: false, isPlan: false, prefix: 'DB', jobTypeKey: 'team' }, 'sub_dashboard': { title: 'Dashboard Subcontractor', isSub: false, isPlan: false, prefix: 'DBS', jobTypeKey: 'preventive' } };
+        const menuConfig = { 'plan_interruption': { title: 'Interruption Plan', isSub: false, isPlan: true, prefix: 'IP', jobTypeKey: 'plan', sheetName: 'Interruption Plan' }, 'summary_plan': { title: 'Project Plan', isSub: false, isPlan: true, prefix: 'Sum', jobTypeKey: 'summary_plan', sheetName: 'Summary Plan' }, 'team': { title: 'Assignment Interruption Team', isSub: false, prefix: 'AI', jobTypeKey: 'team', sheetName: 'Interruption Team' }, 'sub_preventive': { title: 'Assignment Preventive', isSub: true, prefix: 'PVT', jobTypeKey: 'preventive', sheetName: 'Assignment Preventive' }, 'sub_reroute': { title: 'Assignment Reroute', isSub: true, prefix: 'RER', jobTypeKey: 'reroute', sheetName: 'Assignment Reroute' }, 'sub_reconfigure': { title: 'Assignment Reconfigure', isSub: true, prefix: 'REF', jobTypeKey: 'reconfigure', sheetName: 'Assignment Reconfigure' }, 'dashboard_analytics': { title: 'Dashboard Analytics', isSub: false, isPlan: false, prefix: 'DB', jobTypeKey: 'team' }, 'sub_dashboard': { title: 'Dashboard Subcontractor', isSub: false, isPlan: false, prefix: 'DBS', jobTypeKey: 'preventive' } };
 
         function getAssignmentsRef() { return db ? db.collection('assignments') : null; }
         function getSettingsRef() { return db ? db.collection('settings').doc('masterData') : null; }
@@ -807,7 +807,7 @@
                 return assignments.filter(a => {
                     const isDateMatch = (a.actionDate||'').startsWith(dateStr);
                     const isStatusValid = a.status!=='new' && a.status!=='cancel';
-                    const isTypeValid = a.jobType!=='Team Daily' && a.category !== 'summary_plan';
+                    const isTypeValid = a.category !== 'summary_plan';
                     
                     if (!isDateMatch || !isStatusValid || !isTypeValid) return false;
                     
@@ -1518,8 +1518,8 @@
 
                         // แก้ไขจุดที่ 2: เพิ่ม <td> แสดงข้อมูล item.symImpact
                         rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
-                                    <td class="p-3 text-center text-xs text-blue-600 font-bold">${item.projectCode||'-'}</td>
-                                    <td class="p-3 text-xs truncate max-w-[150px]">${item.routeName||'-'}</td>
+                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
+                                    <td class="p-3 text-xs truncate max-w-[400px]">${item.routeName||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
                                     <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
@@ -1528,12 +1528,12 @@
                                     <td class="p-3 text-center">${badge}</td>`;
                     
                     } else if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-xs">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
                         const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
                         rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-xs">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs">${item.routeCode||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]">${item.routeCode||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
                         if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
                         rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
@@ -1559,11 +1559,11 @@
             // Special Logic for Summary Plan Job List
             if (currentCategoryFilter === 'summary_plan') {
                 if (item.status === 'new') {
-                    return `<button onclick="actionReceiveSummary('${item.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs shadow-sm transition">Receive</button>
-                            <button onclick="actionCancelSummary('${item.id}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs shadow-sm ml-1 transition">Cancel Job</button>`;
+                    return `<button onclick="actionReceiveSummary('${item.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm transition">Receive</button>
+                            <button onclick="actionCancelSummary('${item.id}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm ml-1 transition">Cancel Job</button>`;
                 } else if (item.status === 'process') {
-                    return `<button onclick="actionCompleteSummary('${item.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs shadow-sm transition">Complete</button>
-                            <button onclick="actionCancelSummary('${item.id}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs shadow-sm ml-1 transition">Cancel Job</button>`;
+                    return `<button onclick="actionCompleteSummary('${item.id}')" class="bg-green-500 hover:bg-green-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm transition">Complete</button>
+                            <button onclick="actionCancelSummary('${item.id}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm ml-1 transition">Cancel Job</button>`;
                 } else {
                     return '-';
                 }
@@ -2007,7 +2007,31 @@
         window.deleteAssignment = function(id) { Swal.fire({ title: 'Delete?', icon: 'warning', showCancelButton: true }).then((r) => { if (r.isConfirmed) getAssignmentsRef().doc(id).delete(); }); };
         window.viewDetail = function(id) { 
             const item = assignments.find(a => a.id === id); if(!item) return; const nsInfo = extractNS(item.nsRespond); const conf = menuConfig[item.category]; const isSub = conf && conf.isSub; const isPlan = conf && conf.isPlan; const fileLink = item.fileUrl ? `<a href="${item.fileUrl}" target="_blank" class="text-blue-500 hover:underline break-all">${item.fileUrl}</a>` : '-'; const fileDisplay = (item.fileUrl && (item.fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || item.fileUrl.includes('googleusercontent') || item.fileUrl.includes('drive.google.com'))) ? `<br><img src="${item.fileUrl}" class="mt-2 rounded-lg max-h-48 object-cover border border-gray-200" alt="Attached Image">` : ''; let nextSubName = '-'; if (isSub && masterData.subcontractors) { const rr = masterData.rrIndexes?.[item.category]?.index || 0; const subList = masterData.subcontractors || []; if (subList.length > 0) nextSubName = subList[rr % subList.length]; } const createdStr = item.createdAt ? fmtDate(item.createdAt) : '-'; const actionDateStr = fmtDate(item.actionDate); let html = `<div class="text-left text-sm space-y-3 font-prompt">`;
-             if (isSub) {
+            
+			 if (item.category === 'summary_plan') {
+                 // === SHOW ALL DATA FOR SUMMARY PLAN ===
+                 html += `
+                   <div class="font-bold text-lg border-b pb-2 mb-3 text-brand-600 flex items-center"><i class="fa-solid fa-file-contract mr-2"></i> รายละเอียดงาน (Project Plan)</div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Job ID :</div><div class="col-span-8 font-mono font-bold text-gray-800">${item.internalId}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Job Type :</div><div class="col-span-8">${item.jobType || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Project Code :</div><div class="col-span-8 text-blue-600 font-bold">${item.projectCode || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Route Code :</div><div class="col-span-8 font-mono text-gray-700">${item.routeCode || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Route Name :</div><div class="col-span-8">${item.routeName || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Electric Dist. :</div><div class="col-span-8">${item.electricDistrict || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Side Count :</div><div class="col-span-8">${item.sideCount || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Distance :</div><div class="col-span-8 font-bold">${item.distance || '-'} km.</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Owner :</div><div class="col-span-8">${item.owner || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Cross Req :</div><div class="col-span-8">${item.crossReq || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Sym Impact :</div><div class="col-span-8 text-orange-600 font-bold">${item.symImpact || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">GPS Start :</div><div class="col-span-8 text-xs font-mono break-all text-gray-600 bg-gray-50 p-1 rounded">${item.gpsStart || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">GPS End :</div><div class="col-span-8 text-xs font-mono break-all text-gray-600 bg-gray-50 p-1 rounded">${item.gpsEnd || '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Due Date :</div><div class="col-span-8">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Progress :</div><div class="col-span-8"><span class="inline-block px-2 py-0.5 rounded text-white text-xs ${item.progressPercent===100?'bg-green-500':'bg-yellow-500'}">${item.progressPercent || '0'}%</span></div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">NS Respond :</div><div class="col-span-8">${nsInfo.names}</div></div>
+                   <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Remark :</div><div class="col-span-8 text-gray-600 italic">${item.remark || '-'}</div></div>
+                   <div class="mt-3 pt-3 border-t border-dashed border-gray-200"><div class="font-bold text-gray-500 mb-1"><i class="fa-solid fa-paperclip mr-1"></i> ไฟล์แนบ :</div><div class="text-xs">${fileLink}${fileDisplay}</div></div>
+                 `;
+             } else if (isSub) {
                 html += `
                    <div class="font-bold text-lg border-b pb-2 mb-3 text-brand-600 flex items-center"><i class="fa-solid fa-clipboard-check mr-2"></i> รายการงานใหม่ (${conf.title})</div>
                    <div class="grid grid-cols-3 gap-1 items-start"><div class="col-span-1 text-gray-500 font-bold"><i class="fa-regular fa-clock mr-1"></i> วันที่บันทึก :</div><div class="col-span-2">${createdStr}</div></div>
@@ -2028,8 +2052,12 @@
                  html += `<div class="font-bold border-b pb-2 mb-2">🆕 รายการงานใหม่</div><div>📅 วันที่บันทึก : ${createdStr}</div><div>🆔 Job ID : ${item.internalId}</div><div>👷 ผู้รับเหมา : ${item.subcontractor || '-'}</div><div>🛠️ ประเภทงาน : ${item.jobType}</div><div>📝 ชื่องาน : ${item.description}</div><div>🕒 วันที่ดำเนินการ : ${actionDateStr}</div><div>📍 สถานที่ : ${item.location}</div><div class="whitespace-pre-line">🟢 GPS : ${item.gps || '-'}</div><div>👤 ผู้รับผิดชอบ : ${nsInfo.names}</div><div>📞 เบอร์โทร : ${nsInfo.phones}</div><div>📎 ไฟล์แนบ : ${fileLink}</div>`;
             }
             html += `</div>`;
-            Swal.fire({ title: '', html: html, showCancelButton: true, confirmButtonText: '<i class="fa-regular fa-copy"></i> Copy Text', confirmButtonColor: '#06c755', cancelButtonText: 'ปิด', customClass: { container: 'font-sans', popup: 'rounded-2xl' } }).then(r => { if(r.isConfirmed) { let text = ''; if (isSub) { text = `🆕 รายการงานใหม่\n📅 วันที่บันทึก : ${createdStr}\n🆔 Job ID : ${item.internalId}\n👷 ผู้รับเหมาที่รับผิดชอบ : 🟥 ${item.subcontractor || '-'} 🟥\n🛠️ ประเภทงาน : ${item.jobType}\n📝 ชื่องาน : ${item.description}\n🕒 วันที่และเวลาที่ดำเนินการ : ${actionDateStr}\n📍 สถานที่ : ${item.location || '-'}\n🟢 GPS : ${item.gps || '-'}\n👤 ผู้รับผิดชอบ : ${nsInfo.names}\n📞 เบอร์โทร : ${nsInfo.phones}\n⏭️ ผู้รับเหมาถัดไป : 🟥 ${nextSubName} 🟥\n📎 ไฟล์แนบ : ${item.fileUrl || '-'}`; } else if (isPlan) { text = `Job ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${fmtDate(item.actionDate)}`; } else { text = `🆕 รายการงานใหม่\nJob ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${actionDateStr}`; } fallbackCopyTextToClipboard(text); } });
+            Swal.fire({ title: '', html: html, showCancelButton: true, confirmButtonText: '<i class="fa-regular fa-copy"></i> Copy Text', confirmButtonColor: '#06c755', cancelButtonText: 'ปิด', customClass: { container: 'font-sans', popup: 'rounded-2xl' } }).then(r => { if(r.isConfirmed) { let text = ''; 
+            if (item.category === 'summary_plan') {
+                text = `📋 Project Plan Detail\n🆔 Job ID: ${item.internalId}\n🛠️ Type: ${item.jobType}\n🛣️ Route: ${item.routeName} (${item.routeCode})\n📏 Dist: ${item.distance} km\n📅 Due: ${item.dueDate ? fmtDate(item.dueDate, true) : '-'}\n💥 Impact: ${item.symImpact}\n👤 NS: ${nsInfo.names}`;
+            } else if (isSub) { text = `🆕 รายการงานใหม่\n📅 วันที่บันทึก : ${createdStr}\n🆔 Job ID : ${item.internalId}\n👷 ผู้รับเหมาที่รับผิดชอบ : 🟥 ${item.subcontractor || '-'} 🟥\n🛠️ ประเภทงาน : ${item.jobType}\n📝 ชื่องาน : ${item.description}\n🕒 วันที่และเวลาที่ดำเนินการ : ${actionDateStr}\n📍 สถานที่ : ${item.location || '-'}\n🟢 GPS : ${item.gps || '-'}\n👤 ผู้รับผิดชอบ : ${nsInfo.names}\n📞 เบอร์โทร : ${nsInfo.phones}\n⏭️ ผู้รับเหมาถัดไป : 🟥 ${nextSubName} 🟥\n📎 ไฟล์แนบ : ${item.fileUrl || '-'}`; } else if (isPlan) { text = `Job ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${fmtDate(item.actionDate)}`; } else { text = `🆕 รายการงานใหม่\nJob ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${actionDateStr}`; } fallbackCopyTextToClipboard(text); } });
         };
+			
         window.showJobDetail = function(id) { window.viewDetail(id); };
         function fallbackCopyTextToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); const msg = successful ? 'successful' : 'unsuccessful'; Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกข้อความแล้ว', showConfirmButton: false, timer: 1500 }); } catch (err) { console.error('Fallback: Oops, unable to copy', err); } document.body.removeChild(textArea); }
         async function initAuth() { try { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await auth.signInWithCustomToken(__initial_auth_token); } else { await auth.signInAnonymously(); } auth.onAuthStateChanged(user => { if(user) { $('#status-text').text('Online').parent().addClass('bg-green-100 text-green-700'); getAssignmentsRef().onSnapshot(snap => { assignments = []; snap.forEach(d => assignments.push({id:d.id, ...d.data()})); assignments.sort((a,b)=>(b.internalId||'').localeCompare(a.internalId||'')); window.updateView(); }, err => console.error("Snapshot Error:", err)); getSettingsRef().onSnapshot(doc => { if(doc.exists) { masterData = doc.data(); window.renderDropdowns(); if(currentView === 'setting') window.renderSettings(); } else { initializeDatabase(false); } }, err => console.error("Settings Error:", err)); } }); } catch (e) { console.error("Auth Error:", e); Swal.fire('Connection Error', e.message, 'error'); } }
