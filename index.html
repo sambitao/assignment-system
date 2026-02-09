@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs (v8 for compatibility with existing code) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -99,7 +99,7 @@
             <div class="text-center overflow-hidden">
                 <div class="flex justify-center items-center mb-3">
 						
-          				 <img src="SYMC logo.png" 
+          				<img src="SYMC logo.png" 
                          alt="Logo" 
                          class="w-16 h-16 rounded-full object-cover shadow-sm border-2 border-white bg-white">
 					
@@ -150,7 +150,7 @@
                 <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-link text-lg group-hover:text-brand-500"></i></div><span class="ml-3">Link Support</span>
             </a>
         </nav>
-        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption</p></div>
+        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption V.2</p></div>
     </aside>
     
     <!-- Main Content -->
@@ -693,7 +693,7 @@
     </div>
 
     <script>
-        // === GLOBAL SETUP ===
+       // === GLOBAL SETUP ===
         const firebaseConfig = {
 			   apiKey: "AIzaSyBY0ZewKLp8MJbkq2xxcQ2Z_cz7p04e0EY",
 			   authDomain: "assignment-interruption-final.firebaseapp.com",
@@ -704,7 +704,7 @@
 				};
 				
 		const appId = 'assignment-app'; 
-
+		
         let auth, db; 
         try { 
             firebase.initializeApp(firebaseConfig); 
@@ -714,7 +714,7 @@
             console.error("Firebase Init Error:", e); 
         }
         
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbx5KFStUdu_gJ-FmB99YluYydM6ObImyUqrF2vGh6DO1gCAK5JWIxz5AGG40B_iViiULQ/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbw4q5HFIqlTvrA34NN_P9hEWXdVDpyoFICq1OK1NvMkjjN52TSJk5mLHhugc2wbLcqkxA/exec";
 
         let assignments = [];
         let masterData = {};
@@ -1485,7 +1485,6 @@
             
             if (currentCategoryFilter === 'summary_plan') {
                 // Custom columns for Summary Plan Job List
-                // แก้ไขจุดที่ 1: เพิ่ม <th ...>Sym Impact</th> ลงใน cols
                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Project Code</th><th class="${thClass}">Route Name</th><th class="${thClass}">Distance</th><th class="${thClass}">Due Date</th><th class="${thClass}">Sym Impact</th><th class="${thClass}">Progress</th><th class="${thClass}">NS</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isSub) {
                  cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
@@ -1521,7 +1520,6 @@
                             ? `<div class="w-full bg-gray-200 rounded-full h-2.5 mb-1 cursor-pointer" onclick="updateProgressSummary('${item.id}')" title="Click to update"><div class="${progressColor} h-2.5 rounded-full" style="width: ${progressVal}%"></div></div><div class="text-[10px] text-center font-bold text-gray-600 cursor-pointer" onclick="updateProgressSummary('${item.id}')">${progressVal}% <i class="fa-solid fa-pen ml-1 text-gray-400 hover:text-brand-500"></i></div>` 
                             : `<div class="text-center font-bold text-gray-500 text-xs">${progressVal}%</div>`;
 
-                        // แก้ไขจุดที่ 2: เพิ่ม <td> แสดงข้อมูล item.symImpact
                         rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
                                     <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
                                     <td class="p-3 text-xs truncate max-w-[400px]">${item.routeName||'-'}</td>
@@ -1557,8 +1555,6 @@
             $('#pagination-info').text(`Showing ${Math.min(start+1, total)}-${Math.min(start+pageData.length, total)} of ${total}`);
             $('#pagination-controls').html(`<button onclick="changePage(${Math.max(1, currentPage-1)})" class="px-2 border rounded"><</button><button onclick="changePage(${Math.min(Math.ceil(total/rowsPerPage), currentPage+1)})" class="px-2 border rounded">></button>`);
         };
-
-        // window.renderSettings ... (Refactored below)
 
         window.getActionButtons = function(item, isSub, isPlan) {
             // Special Logic for Summary Plan Job List
@@ -1743,6 +1739,7 @@
             $('#rr-normal-view').removeClass('hidden');
             $('#rr-special-view').addClass('hidden');
             $('#form-manual-sub').empty().append('<option value="">เลือกผู้รับเหมา...</option>');
+            $('#form-sub-name').removeData('original'); // Clear old data
 
             if(targetCat === 'summary_plan') {
                 $('#form-agency').removeAttr('required');
@@ -1812,7 +1809,14 @@
                         $('#form-action-date').val(item.actionDate ? item.actionDate.slice(0,16) : '');
                     }
                     $('#form-location').val(item.location); $('#form-remark').val(item.remark); if(item.nsRespond) $('#form-ns-respond').val(item.nsRespond).trigger('change');
-                    if(conf.isSub) { $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); $('#form-sub-name').val(item.subcontractor); $('#rr-next-name').text(item.subcontractor); $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); }
+                    if(conf.isSub) { 
+                        $('#form-objective').val(item.objective); $('#form-expenses').val(item.expenses); $('#form-route-code-sub').val(item.routeCode); 
+                        $('#form-sub-name').val(item.subcontractor);
+                        // FIX: เก็บค่า Original Subcontractor ไว้ใช้ตอนเปลี่ยน Job Type กลับมา
+                        $('#form-sub-name').data('original', item.subcontractor);  
+                        $('#rr-next-name').text(item.subcontractor); 
+                        $('.rr-label.text-brand-600').text('ทีมที่รับงานนี้ (Assigned)'); 
+                    }
                     else { $('#form-due-date').val(item.dueDate); $('#form-team-req').val(item.teamReq); $('#form-req-person').val(item.reqPerson); $('#form-ref-job-id').val(item.refJobId); $('#form-gps').val(item.gps); }
                     if(conf.isSub) $('#form-due-date-sub').val(item.dueDate);
                     if(item.fileName) { $('#file-name-display').text(item.fileName); }
@@ -2011,10 +2015,25 @@
         window.updateStatus = function(id, status, extra) { $.LoadingOverlay("show"); getAssignmentsRef().doc(id).update({status: status, ...extra}).then(async () => { const item = assignments.find(a => a.id === id); if(item) { const u = {...item, status, ...extra}; const c = menuConfig[u.category]; if(c) await sendToSheet(u, c.sheetName); } $.LoadingOverlay("hide"); }).catch(e => { $.LoadingOverlay("hide"); Swal.fire('Error',e.message,'error'); }); };
         window.deleteAssignment = function(id) { Swal.fire({ title: 'Delete?', icon: 'warning', showCancelButton: true }).then((r) => { if (r.isConfirmed) getAssignmentsRef().doc(id).delete(); }); };
         window.viewDetail = function(id) { 
-            const item = assignments.find(a => a.id === id); if(!item) return; const nsInfo = extractNS(item.nsRespond); const conf = menuConfig[item.category]; const isSub = conf && conf.isSub; const isPlan = conf && conf.isPlan; const fileLink = item.fileUrl ? `<a href="${item.fileUrl}" target="_blank" class="text-blue-500 hover:underline break-all">${item.fileUrl}</a>` : '-'; const fileDisplay = (item.fileUrl && (item.fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || item.fileUrl.includes('googleusercontent') || item.fileUrl.includes('drive.google.com'))) ? `<br><img src="${item.fileUrl}" class="mt-2 rounded-lg max-h-48 object-cover border border-gray-200" alt="Attached Image">` : ''; let nextSubName = '-'; if (isSub && masterData.subcontractors) { const rr = masterData.rrIndexes?.[item.category]?.index || 0; const subList = masterData.subcontractors || []; if (subList.length > 0) nextSubName = subList[rr % subList.length]; } const createdStr = item.createdAt ? fmtDate(item.createdAt) : '-'; const actionDateStr = fmtDate(item.actionDate); let html = `<div class="text-left text-sm space-y-3 font-prompt">`;
+            const item = assignments.find(a => a.id === id); if(!item) return; const nsInfo = extractNS(item.nsRespond); const conf = menuConfig[item.category]; const isSub = conf && conf.isSub; const isPlan = conf && conf.isPlan; const fileLink = item.fileUrl ? `<a href="${item.fileUrl}" target="_blank" class="text-blue-500 hover:underline break-all">${item.fileUrl}</a>` : '-'; const fileDisplay = (item.fileUrl && (item.fileUrl.match(/\.(jpeg|jpg|gif|png)$/) != null || item.fileUrl.includes('googleusercontent') || item.fileUrl.includes('drive.google.com'))) ? `<br><img src="${item.fileUrl}" class="mt-2 rounded-lg max-h-48 object-cover border border-gray-200" alt="Attached Image">` : ''; 
+            
+            // FIX: แก้ไขการคำนวณ Next Team ให้เป็น Relative ต่อจากงานนี้ ไม่ใช่ Global Index
+            let nextSubName = '-'; 
+            if (isSub && masterData.subcontractors) { 
+                const subList = masterData.subcontractors || []; 
+                if (subList.length > 0) {
+                    const currentSub = item.subcontractor;
+                    const currentIndex = subList.indexOf(currentSub);
+                    if (currentIndex !== -1) {
+                         // ถ้าหาเจอ ให้เอาตัวถัดไปในลิสต์ (วนกลับถ้าสุด)
+                         nextSubName = subList[(currentIndex + 1) % subList.length];
+                    }
+                }
+            } 
+            
+            const createdStr = item.createdAt ? fmtDate(item.createdAt) : '-'; const actionDateStr = fmtDate(item.actionDate); let html = `<div class="text-left text-sm space-y-3 font-prompt">`;
             
 			 if (item.category === 'summary_plan') {
-                 // === SHOW ALL DATA FOR SUMMARY PLAN ===
                  html += `
                    <div class="font-bold text-lg border-b pb-2 mb-3 text-brand-600 flex items-center"><i class="fa-solid fa-file-contract mr-2"></i> รายละเอียดงาน (Project Plan)</div>
                    <div class="grid grid-cols-12 gap-2 items-start"><div class="col-span-4 text-gray-500 font-bold">Job ID :</div><div class="col-span-8 font-mono font-bold text-gray-800">${item.internalId}</div></div>
@@ -2097,8 +2116,20 @@
                     } else {
                         $('#rr-normal-view').removeClass('hidden');
                         $('#rr-special-view').addClass('hidden');
-                        // Restore RR sub name
-                        fetchRoundRobinState();
+                        
+                        // FIX: ตรวจสอบว่าอยู่ในโหมดแก้ไขหรือไม่
+                        const docId = $('#doc-id').val();
+                        if (!docId) {
+                             // ถ้าเป็นงานใหม่ ให้ดึงคิวล่าสุด
+                             fetchRoundRobinState();
+                        } else {
+                             // ถ้าแก้ไข ให้คืนค่าเดิมที่เคยบันทึกไว้ (ไม่ดึงคิวใหม่)
+                             const originalSub = $('#form-sub-name').data('original');
+                             if(originalSub) {
+                                 $('#form-sub-name').val(originalSub);
+                                 $('#rr-next-name').text(originalSub);
+                             }
+                        }
                     }
                 }
             });
@@ -2119,55 +2150,6 @@
             });
         });
         
-        // NEW: Robust Setting Render Function
-        window.renderSettings = function() {
-            const listSub = $('#list-subcontractors');
-            const listNs = $('#list-nsRespond');
-            
-            if (listSub.length === 0 || listNs.length === 0) return; // Safety check
-
-            listSub.empty();
-            listNs.empty();
-
-            // Handle case sensitivity and fallback
-            const subs = masterData.subcontractors || masterData.Subcontractors || [];
-            const ns = masterData.nsRespond || masterData.NsRespond || [];
-
-            if (subs.length === 0) {
-                listSub.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
-            } else {
-                subs.forEach(item => {
-                    // Determine key for removal
-                    const key = masterData.subcontractors ? 'subcontractors' : 'Subcontractors';
-                    listSub.append(`
-                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
-                            <span class="font-medium text-gray-700">${item}</span>
-                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </li>
-                    `);
-                });
-            }
-
-            if (ns.length === 0) {
-                listNs.append('<li class="text-gray-400 text-sm text-center p-2">ไม่มีข้อมูล</li>');
-            } else {
-                ns.forEach(item => {
-                    const key = masterData.nsRespond ? 'nsRespond' : 'NsRespond';
-                    listNs.append(`
-                        <li class="flex justify-between items-center bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm">
-                            <span class="font-medium text-gray-700">${item}</span>
-                            <button onclick="removeSettingItem('${key}', '${item}')" class="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </li>
-                    `);
-                });
-            }
-        };
     </script>
 </body>
 </html>
-
-
