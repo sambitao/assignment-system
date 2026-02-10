@@ -1557,8 +1557,9 @@
         };
 
         window.getActionButtons = function(item, isSub, isPlan) {
-            // Special Logic for Summary Plan Job List
-            if (currentCategoryFilter === 'summary_plan') {
+		
+            // FIX: Check item.category for robustness in Calendar view
+            if (item.category === 'summary_plan' || currentCategoryFilter === 'summary_plan') {
                 if (item.status === 'new') {
                     return `<button onclick="actionReceiveSummary('${item.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm transition">Receive</button>
                             <button onclick="actionCancelSummary('${item.id}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-0.5 rounded text-[10px] shadow-sm ml-1 transition">Cancel Job</button>`;
@@ -1569,7 +1570,6 @@
                     return '-';
                 }
             }
-
             if (isPlan) {
                 const cancelBtn = `<button onclick="actionCancelPlan('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] ml-1">Cancel Job</button>`;
                 if (item.status === 'new') return `<button onclick="actionReceivePlan('${item.id}')" class="bg-blue-500 text-white px-2 py-0.5 rounded text-[10px]">Receive</button>${cancelBtn}`;
@@ -1726,6 +1726,13 @@
         window.actionCancelPlan = function(id) { const ops = (masterData.nsRespond || []).map(n => `<option value="${n}">${n}</option>`).join(''); Swal.fire({ title: 'Cancel Job', html: `<div class="text-left"><label class="text-sm font-bold text-gray-700">ผู้แจ้งยกเลิก (NS Respond)</label><select id="cancel-ns" class="swal2-select w-full m-0 mb-3 border border-gray-300 rounded p-2"><option value="">เลือกชื่อ...</option>${ops}</select><label class="text-sm font-bold text-gray-700">สาเหตุการยกเลิก (Reason)</label><input id="cancel-reason" class="swal2-input m-0 w-full" placeholder="ระบุสาเหตุ..."></div>`, showCancelButton: true, confirmButtonColor: '#ef4444', preConfirm: () => { const ns = document.getElementById('cancel-ns').value; const reason = document.getElementById('cancel-reason').value; if (!ns) Swal.showValidationMessage('กรุณาเลือกชื่อผู้แจ้งยกเลิก'); return { ns, reason }; } }).then((result) => { if (result.isConfirmed) { window.updateStatus(id, 'cancel', { cancelBy: result.value.ns, cancelReason: result.value.reason, cancelDate: new Date().toISOString() }); } }); };
 
         window.openModal = function(id = null) {
+		 // FIX: ถ้ามี ID (โหมดแก้ไข) ให้ดึง Category จาก Item นั้นมาเซ็ตเป็น Context ก่อน
+            if (id) {
+                const existItem = assignments.find(a => a.id === id);
+                if(existItem && existItem.category) {
+                    currentCategoryFilter = existItem.category;
+                }
+            }
             $('#assignment-form')[0].reset(); $('#doc-id').val(''); $('.select2').val(null).trigger('change');
             if(!menuConfig[currentCategoryFilter] && currentCategoryFilter !== 'summary_dashboard') currentCategoryFilter = 'team'; 
             
@@ -2075,6 +2082,22 @@
             } else {
                  html += `<div class="font-bold border-b pb-2 mb-2">🆕 รายการงานใหม่</div><div>📅 วันที่บันทึก : ${createdStr}</div><div>🆔 Job ID : ${item.internalId}</div><div>👷 ผู้รับเหมา : ${item.subcontractor || '-'}</div><div>🛠️ ประเภทงาน : ${item.jobType}</div><div>📝 ชื่องาน : ${item.description}</div><div>🕒 วันที่ดำเนินการ : ${actionDateStr}</div><div>📍 สถานที่ : ${item.location}</div><div class="whitespace-pre-line">🟢 GPS : ${item.gps || '-'}</div><div>👤 ผู้รับผิดชอบ : ${nsInfo.names}</div><div>📞 เบอร์โทร : ${nsInfo.phones}</div><div>📎 ไฟล์แนบ : ${fileLink}</div>`;
             }
+			
+			// --- NEW: Add Action Buttons to Popup ---
+            const actionButtons = window.getActionButtons(item, isSub, isPlan);
+            const editButton = `<button onclick="Swal.close(); openModal('${item.id}')" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition shadow-sm"><i class="fa-solid fa-pen-to-square mr-1"></i> แก้ไข (Edit)</button>`;
+            
+            html += `
+                <div class="mt-4 pt-3 border-t border-gray-200">
+                    <div class="font-bold text-gray-500 mb-2 text-xs uppercase tracking-wider text-center">จัดการงาน (Actions)</div>
+                    <div class="flex flex-wrap justify-center gap-2 items-center">
+                        ${actionButtons !== '-' ? actionButtons : ''}
+                        ${editButton}
+                    </div>
+                </div>
+            `;
+            // ----------------------------------------
+			
             html += `</div>`;
             Swal.fire({ title: '', html: html, showCancelButton: true, confirmButtonText: '<i class="fa-regular fa-copy"></i> Copy Text', confirmButtonColor: '#06c755', cancelButtonText: 'ปิด', customClass: { container: 'font-sans', popup: 'rounded-2xl' } }).then(r => { if(r.isConfirmed) { let text = ''; 
             if (item.category === 'summary_plan') {
@@ -2153,4 +2176,3 @@
     </script>
 </body>
 </html>
-
