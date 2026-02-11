@@ -751,7 +751,7 @@
         }
         
         const GAS_URL = "https://script.google.com/macros/s/AKfycbx5KFStUdu_gJ-FmB99YluYydM6ObImyUqrF2vGh6DO1gCAK5JWIxz5AGG40B_iViiULQ/exec";
-		
+
         let assignments = [];
         let masterData = {};
         let currentView = 'calendar';
@@ -1546,9 +1546,7 @@
                     const badge = `<span class="status-badge status-${item.status}">${item.status.toUpperCase().replace('_', ' ')}</span>`;
                     const sub = config && config.isSub ? (item.subcontractor || '-') : (item.teamReq || '-');
                     const acts = window.getActionButtons(item, config && config.isSub, config && config.isPlan);
-                    const nsNames = extractNS(item.nsRespond).names; // Extract NS names for reuse
-
-                    let rowHtml = `<td class="p-3 text-center font-mono font-bold text-brand-600 text-xs" title="${item.internalId}">${item.internalId}</td>`;
+                    let rowHtml = `<td class="p-3 text-center font-mono font-bold text-brand-600 text-xs">${item.internalId}</td>`;
                     
                     if (currentCategoryFilter === 'summary_plan') {
                         // Summary Plan Rows
@@ -1558,27 +1556,27 @@
                             ? `<div class="w-full bg-gray-200 rounded-full h-2.5 mb-1 cursor-pointer" onclick="updateProgressSummary('${item.id}')" title="Click to update"><div class="${progressColor} h-2.5 rounded-full" style="width: ${progressVal}%"></div></div><div class="text-[10px] text-center font-bold text-gray-600 cursor-pointer" onclick="updateProgressSummary('${item.id}')">${progressVal}% <i class="fa-solid fa-pen ml-1 text-gray-400 hover:text-brand-500"></i></div>` 
                             : `<div class="text-center font-bold text-gray-500 text-xs">${progressVal}%</div>`;
 
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td>
-                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold" title="${item.projectCode||''}">${item.projectCode||'-'}</td>
-                                    <td class="p-3 text-xs truncate max-w-[400px]" title="${item.routeName||''}">${item.routeName||'-'}</td>
-                                    <td class="p-3 text-center text-xs" title="${item.distance||''}">${item.distance||'-'}</td>
-                                    <td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
-                                    <td class="p-3 text-center text-xs text-orange-600 font-medium" title="${item.symImpact||''}">${item.symImpact||'-'}</td>
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
+                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
+                                    <td class="p-3 text-xs truncate max-w-[400px]">${item.routeName||'-'}</td>
+                                    <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
+                                    <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
+                                    <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
                                     <td class="p-3 w-24 align-middle">${progressHtml}</td>
-                                    <td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>
+                                    <td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>
                                     <td class="p-3 text-center">${badge}</td>`;
                     
                     } else if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 text-xs" title="${item.project||''}">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td><td class="p-3 text-xs" title="${item.agency||''}">${item.agency||'-'}</td><td class="p-3 text-center text-xs" title="${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : ''}">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
                         const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
-                        rowHtml += `<td class="p-3 text-center text-xs" title="${item.planDate ? fmtDate(item.planDate, true) + (item.planStartTime ? ' ' + item.planStartTime + '-' + item.planEndTime : '') : ''}">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]" title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs" title="${item.expenses||''}">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.routeCode||''}">${item.routeCode||'-'}</td>`;
-                        rowHtml += `<td class="p-3 text-center text-xs" title="${fmtDate(item.actionDate)}">${fmtDate(item.actionDate)}</td>`;
-                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
-                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs" title="${sub}">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>`;
-                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]">${item.routeCode||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
+                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
+                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center">${badge}</td>`;
                     }
                     
@@ -2149,6 +2147,8 @@
                 text = `📋 Project Plan Detail\n🆔 Job ID: ${item.internalId}\n🛠️ Type: ${item.jobType}\n🛣️ Route: ${item.routeName} (${item.routeCode})\n📏 Dist: ${item.distance} km\n📅 Due: ${item.dueDate ? fmtDate(item.dueDate, true) : '-'}\n💥 Impact: ${item.symImpact}\n👤 NS: ${nsInfo.names}`;
             } else if (isSub) { text = `🆕 รายการงานใหม่\n📅 วันที่บันทึก : ${createdStr}\n🆔 Job ID : ${item.internalId}\n👷 ผู้รับเหมาที่รับผิดชอบ : 🟥 ${item.subcontractor || '-'} 🟥\n🛠️ ประเภทงาน : ${item.jobType}\n📝 ชื่องาน : ${item.description}\n🕒 วันที่และเวลาที่ดำเนินการ : ${actionDateStr}\n📍 สถานที่ : ${item.location || '-'}\n🟢 GPS : ${item.gps || '-'}\n👤 ผู้รับผิดชอบ : ${nsInfo.names}\n📞 เบอร์โทร : ${nsInfo.phones}\n⏭️ ผู้รับเหมาถัดไป : 🟥 ${nextSubName} 🟥\n📎 ไฟล์แนบ : ${item.fileUrl || '-'}`; } else if (isPlan) { text = `Job ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${fmtDate(item.actionDate)}`; } else { text = `🆕 รายการงานใหม่\nJob ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${actionDateStr}`; } fallbackCopyTextToClipboard(text); } });
         };
+			
+        window.showJobDetail = function(id) { window.viewDetail(id); };
         function fallbackCopyTextToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); const msg = successful ? 'successful' : 'unsuccessful'; Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกข้อความแล้ว', showConfirmButton: false, timer: 1500 }); } catch (err) { console.error('Fallback: Oops, unable to copy', err); } document.body.removeChild(textArea); }
         
         // NEW: Function to update sidebar notification badges
