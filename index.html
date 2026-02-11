@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat v8 for existing code compatibility) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -116,7 +116,12 @@
             <a href="#" onclick="switchView('calendar')" class="nav-item flex items-center p-3 rounded-lg hover:bg-brand-50 hover:text-brand-600 transition-all group" data-view="calendar">
                 <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-regular fa-calendar-days text-lg"></i></div><span class="ml-3">ปฏิทินงาน (Calendar)</span>
             </a>
-            <a href="#" onclick="switchView('plan_interruption')" class="nav-item flex items-center p-3 rounded-lg hover:bg-brand-50 hover:text-brand-600 transition-all group" data-view="plan_interruption"><div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-clipboard-list text-lg group-hover:text-brand-500"></i></div><span class="ml-3">Interruption Plan</span></a>
+            <a href="#" onclick="switchView('plan_interruption')" class="nav-item flex items-center p-3 rounded-lg hover:bg-brand-50 hover:text-brand-600 transition-all group" data-view="plan_interruption">
+                <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-clipboard-list text-lg group-hover:text-brand-500"></i></div>
+                <span class="ml-3">Interruption Plan</span>
+                <!-- Badge for Plan -->
+                <span id="badge-plan_interruption" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-sm transform scale-100 transition-transform duration-200">0</span>
+            </a>
             
             <!-- Summary Plan Menu -->
             <div>
@@ -125,22 +130,53 @@
                         <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-file-contract text-lg group-hover:text-brand-500"></i></div>
                         <span class="ml-3">Project Plan</span>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-gray-400"></i>
+                    <div class="flex items-center">
+                        <!-- Parent Badge for Summary -->
+                        <span id="badge-parent-summary" class="mr-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-sm">0</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-gray-400"></i>
+                    </div>
                 </button>
                 <div id="summary-menu" class="submenu pl-4 space-y-1 mt-1">
-                    <a href="#" onclick="switchView('summary_plan')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium" data-view="summary_plan"><i class="fa-solid fa-list mr-2 text-xs"></i>Job List</a>
+                    <a href="#" onclick="switchView('summary_plan')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium flex justify-between items-center" data-view="summary_plan">
+                        <span><i class="fa-solid fa-list mr-2 text-xs"></i>Job List</span>
+                        <span id="badge-summary_plan" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                    </a>
                     <a href="#" onclick="switchView('summary_dashboard')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium" data-view="summary_dashboard"><i class="fa-solid fa-chart-simple mr-2 text-xs"></i>Dashboard Project</a>
                 </div>
             </div>
 
-            <a href="#" onclick="switchView('team', 'Interruption Team')" class="nav-item flex items-center p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all" data-view="team"><div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-users text-lg"></i></div><span class="ml-3">Interruption Team</span></a>
+            <a href="#" onclick="switchView('team', 'Interruption Team')" class="nav-item flex items-center p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all" data-view="team">
+                <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-users text-lg"></i></div>
+                <span class="ml-3">Interruption Team</span>
+                <!-- Badge for Team -->
+                <span id="badge-team" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-sm">0</span>
+            </a>
             <div>
-                <button onclick="toggleSubmenu('subcontractor-menu', this)" class="w-full flex items-center justify-between p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all group"><div class="flex items-center"><div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-helmet-safety text-lg group-hover:text-brand-500"></i></div><span class="ml-3">Subcontractor</span></div><i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-gray-400"></i></button>
+                <button onclick="toggleSubmenu('subcontractor-menu', this)" class="w-full flex items-center justify-between p-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 transition-all group">
+                    <div class="flex items-center">
+                        <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-helmet-safety text-lg group-hover:text-brand-500"></i></div>
+                        <span class="ml-3">Subcontractor</span>
+                    </div>
+                    <div class="flex items-center">
+                        <!-- Parent Badge for Subcontractor -->
+                        <span id="badge-parent-sub" class="mr-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-sm">0</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-gray-400"></i>
+                    </div>
+                </button>
                 <div id="subcontractor-menu" class="submenu pl-4 space-y-1 mt-1">
                     <a href="#" onclick="switchView('sub_dashboard')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 font-medium"><i class="fa-solid fa-chart-line mr-2 text-xs"></i>Dashboard & Cost</a>
-                    <a href="#" onclick="switchView('sub_preventive', 'Assignment Preventive')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300">Preventive</a>
-                    <a href="#" onclick="switchView('sub_reroute', 'Assignment Reroute')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300">Reroute</a>
-                    <a href="#" onclick="switchView('sub_reconfigure', 'Assignment Reconfigure')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300">Reconfigure & Cancel</a>
+                    <a href="#" onclick="switchView('sub_preventive', 'Assignment Preventive')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 flex justify-between items-center">
+                        <span>Preventive</span>
+                        <span id="badge-sub_preventive" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                    </a>
+                    <a href="#" onclick="switchView('sub_reroute', 'Assignment Reroute')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 flex justify-between items-center">
+                        <span>Reroute</span>
+                        <span id="badge-sub_reroute" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                    </a>
+                    <a href="#" onclick="switchView('sub_reconfigure', 'Assignment Reconfigure')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300 flex justify-between items-center">
+                        <span>Reconfigure & Cancel</span>
+                        <span id="badge-sub_reconfigure" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                    </a>
                     <a href="#" onclick="switchView('setting')" class="block p-2 rounded-md text-sm text-gray-600 hover:text-brand-600 hover:bg-brand-50 pl-12 border-l-2 border-transparent hover:border-brand-300"><i class="fa-solid fa-gear mr-2"></i>Setting</a>
                 </div>
             </div>
@@ -150,7 +186,7 @@
                 <div class="w-8 flex justify-center flex-shrink-0"><i class="fa-solid fa-link text-lg group-hover:text-brand-500"></i></div><span class="ml-3">Link Support</span>
             </a>
         </nav>
-        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption V.3</p></div>
+        <div class="p-4 border-t border-gray-100 text-xs text-gray-400 text-center bg-gray-50"><p>© 2026 Assignment Interruption V.4</p></div>
     </aside>
     
     <!-- Main Content -->
@@ -694,7 +730,7 @@
 
     <script>
        // === GLOBAL SETUP ===
-        const firebaseConfig = {
+       const firebaseConfig = {
 			   apiKey: "AIzaSyBY0ZewKLp8MJbkq2xxcQ2Z_cz7p04e0EY",
 			   authDomain: "assignment-interruption-final.firebaseapp.com",
 			   projectId: "assignment-interruption-final",
@@ -715,7 +751,7 @@
         }
         
         const GAS_URL = "https://script.google.com/macros/s/AKfycbx5KFStUdu_gJ-FmB99YluYydM6ObImyUqrF2vGh6DO1gCAK5JWIxz5AGG40B_iViiULQ/exec";
-
+		
         let assignments = [];
         let masterData = {};
         let currentView = 'calendar';
@@ -1510,7 +1546,9 @@
                     const badge = `<span class="status-badge status-${item.status}">${item.status.toUpperCase().replace('_', ' ')}</span>`;
                     const sub = config && config.isSub ? (item.subcontractor || '-') : (item.teamReq || '-');
                     const acts = window.getActionButtons(item, config && config.isSub, config && config.isPlan);
-                    let rowHtml = `<td class="p-3 text-center font-mono font-bold text-brand-600 text-xs">${item.internalId}</td>`;
+                    const nsNames = extractNS(item.nsRespond).names; // Extract NS names for reuse
+
+                    let rowHtml = `<td class="p-3 text-center font-mono font-bold text-brand-600 text-xs" title="${item.internalId}">${item.internalId}</td>`;
                     
                     if (currentCategoryFilter === 'summary_plan') {
                         // Summary Plan Rows
@@ -1520,27 +1558,27 @@
                             ? `<div class="w-full bg-gray-200 rounded-full h-2.5 mb-1 cursor-pointer" onclick="updateProgressSummary('${item.id}')" title="Click to update"><div class="${progressColor} h-2.5 rounded-full" style="width: ${progressVal}%"></div></div><div class="text-[10px] text-center font-bold text-gray-600 cursor-pointer" onclick="updateProgressSummary('${item.id}')">${progressVal}% <i class="fa-solid fa-pen ml-1 text-gray-400 hover:text-brand-500"></i></div>` 
                             : `<div class="text-center font-bold text-gray-500 text-xs">${progressVal}%</div>`;
 
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
-                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
-                                    <td class="p-3 text-xs truncate max-w-[400px]">${item.routeName||'-'}</td>
-                                    <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
-                                    <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
-                                    <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
+                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td>
+                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold" title="${item.projectCode||''}">${item.projectCode||'-'}</td>
+                                    <td class="p-3 text-xs truncate max-w-[400px]" title="${item.routeName||''}">${item.routeName||'-'}</td>
+                                    <td class="p-3 text-center text-xs" title="${item.distance||''}">${item.distance||'-'}</td>
+                                    <td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
+                                    <td class="p-3 text-center text-xs text-orange-600 font-medium" title="${item.symImpact||''}">${item.symImpact||'-'}</td>
                                     <td class="p-3 w-24 align-middle">${progressHtml}</td>
-                                    <td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>
+                                    <td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>
                                     <td class="p-3 text-center">${badge}</td>`;
                     
                     } else if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 text-xs" title="${item.project||''}">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td><td class="p-3 text-xs" title="${item.agency||''}">${item.agency||'-'}</td><td class="p-3 text-center text-xs" title="${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : ''}">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
                         const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
-                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs" title="${item.planDate ? fmtDate(item.planDate, true) + (item.planStartTime ? ' ' + item.planStartTime + '-' + item.planEndTime : '') : ''}">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]">${item.routeCode||'-'}</td>`;
-                        rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
-                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
-                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
-                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]" title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs" title="${item.expenses||''}">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.routeCode||''}">${item.routeCode||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs" title="${fmtDate(item.actionDate)}">${fmtDate(item.actionDate)}</td>`;
+                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs" title="${sub}">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>`;
+                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center">${badge}</td>`;
                     }
                     
@@ -1574,9 +1612,16 @@
                 const cancelBtn = `<button onclick="actionCancelPlan('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] ml-1">Cancel Job</button>`;
                 if (item.status === 'new') return `<button onclick="actionReceivePlan('${item.id}')" class="bg-blue-500 text-white px-2 py-0.5 rounded text-[10px]">Receive</button>${cancelBtn}`;
                 if (item.status === 'process') return `<button onclick="actionCompletePlan('${item.id}')" class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Complete</button>${cancelBtn}`;
-                if (item.status === 'complete') return `<button onclick="actionUpdateFMS('${item.id}')" class="bg-cyan-600 text-white px-2 py-0.5 rounded text-[10px]">Update FMS</button>`;
-                return '-';
-            }
+                
+                // Logic: Only 'Interruption OFC' can proceed to Update FMS after Complete
+                if (item.status === 'complete') {
+                    if (item.jobType === 'Interruption OFC') {
+                        return `<button onclick="actionUpdateFMS('${item.id}')" class="bg-cyan-600 text-white px-2 py-0.5 rounded text-[10px]">Update FMS</button>`;
+                    }
+                    return '-'; // Other job types stop at Complete
+                }
+				}
+				
             if (!isSub) {
                 if (item.status === 'new') return `<button onclick="updateStatus('${item.id}','process',{receiveDate:new Date().toISOString()})" class="bg-yellow-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">Receive</button><button onclick="actionCancel('${item.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">Cancel</button>`;
                 if (item.status === 'process') return `<button onclick="updateStatus('${item.id}','complete',{completeDate:new Date().toISOString()})" class="bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Finish</button>`;
@@ -2104,10 +2149,85 @@
                 text = `📋 Project Plan Detail\n🆔 Job ID: ${item.internalId}\n🛠️ Type: ${item.jobType}\n🛣️ Route: ${item.routeName} (${item.routeCode})\n📏 Dist: ${item.distance} km\n📅 Due: ${item.dueDate ? fmtDate(item.dueDate, true) : '-'}\n💥 Impact: ${item.symImpact}\n👤 NS: ${nsInfo.names}`;
             } else if (isSub) { text = `🆕 รายการงานใหม่\n📅 วันที่บันทึก : ${createdStr}\n🆔 Job ID : ${item.internalId}\n👷 ผู้รับเหมาที่รับผิดชอบ : 🟥 ${item.subcontractor || '-'} 🟥\n🛠️ ประเภทงาน : ${item.jobType}\n📝 ชื่องาน : ${item.description}\n🕒 วันที่และเวลาที่ดำเนินการ : ${actionDateStr}\n📍 สถานที่ : ${item.location || '-'}\n🟢 GPS : ${item.gps || '-'}\n👤 ผู้รับผิดชอบ : ${nsInfo.names}\n📞 เบอร์โทร : ${nsInfo.phones}\n⏭️ ผู้รับเหมาถัดไป : 🟥 ${nextSubName} 🟥\n📎 ไฟล์แนบ : ${item.fileUrl || '-'}`; } else if (isPlan) { text = `Job ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${fmtDate(item.actionDate)}`; } else { text = `🆕 รายการงานใหม่\nJob ID: ${item.internalId}\nDesc: ${item.description}\nDate: ${actionDateStr}`; } fallbackCopyTextToClipboard(text); } });
         };
-			
-        window.showJobDetail = function(id) { window.viewDetail(id); };
         function fallbackCopyTextToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); const msg = successful ? 'successful' : 'unsuccessful'; Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกข้อความแล้ว', showConfirmButton: false, timer: 1500 }); } catch (err) { console.error('Fallback: Oops, unable to copy', err); } document.body.removeChild(textArea); }
-        async function initAuth() { try { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await auth.signInWithCustomToken(__initial_auth_token); } else { await auth.signInAnonymously(); } auth.onAuthStateChanged(user => { if(user) { $('#status-text').text('Online').parent().addClass('bg-green-100 text-green-700'); getAssignmentsRef().onSnapshot(snap => { assignments = []; snap.forEach(d => assignments.push({id:d.id, ...d.data()})); assignments.sort((a,b)=>(b.internalId||'').localeCompare(a.internalId||'')); window.updateView(); }, err => console.error("Snapshot Error:", err)); getSettingsRef().onSnapshot(doc => { if(doc.exists) { masterData = doc.data(); window.renderDropdowns(); if(currentView === 'setting') window.renderSettings(); } else { initializeDatabase(false); } }, err => console.error("Settings Error:", err)); } }); } catch (e) { console.error("Auth Error:", e); Swal.fire('Connection Error', e.message, 'error'); } }
+        
+        // NEW: Function to update sidebar notification badges
+        window.updateSidebarBadges = function() {
+            // Categories to track
+            const cats = ['plan_interruption', 'summary_plan', 'team', 'sub_preventive', 'sub_reroute', 'sub_reconfigure'];
+            
+            // Reset counts
+            const counts = {};
+            cats.forEach(c => counts[c] = 0);
+
+            // Calculate 'new' jobs
+            assignments.forEach(a => {
+                if (a.status === 'new' && counts[a.category] !== undefined) {
+                    counts[a.category]++;
+                }
+            });
+
+            // Update Leaf Badges
+            cats.forEach(c => {
+                const el = $(`#badge-${c}`);
+                if (counts[c] > 0) {
+                    el.text(counts[c]).removeClass('hidden');
+                } else {
+                    el.addClass('hidden');
+                }
+            });
+            
+            // Update Parent Menu Badges (Sum of children)
+            // 1. Project Plan Parent
+            const sumPlan = counts['summary_plan'];
+            const badgeSumPlan = $('#badge-parent-summary');
+            if(sumPlan > 0) badgeSumPlan.text(sumPlan).removeClass('hidden'); 
+            else badgeSumPlan.addClass('hidden');
+
+            // 2. Subcontractor Parent
+            const sumSub = counts['sub_preventive'] + counts['sub_reroute'] + counts['sub_reconfigure'];
+            const badgeSub = $('#badge-parent-sub');
+            if(sumSub > 0) badgeSub.text(sumSub).removeClass('hidden'); 
+            else badgeSub.addClass('hidden');
+        };
+
+        async function initAuth() { 
+            try { 
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { 
+                    await auth.signInWithCustomToken(__initial_auth_token); 
+                } else { 
+                    await auth.signInAnonymously(); 
+                } 
+                auth.onAuthStateChanged(user => { 
+                    if(user) { 
+                        $('#status-text').text('Online').parent().addClass('bg-green-100 text-green-700'); 
+                        getAssignmentsRef().onSnapshot(snap => { 
+                            assignments = []; 
+                            snap.forEach(d => assignments.push({id:d.id, ...d.data()})); 
+                            assignments.sort((a,b)=>(b.internalId||'').localeCompare(a.internalId||'')); 
+                            
+                            // Call Badge Update here
+                            window.updateSidebarBadges();
+                            
+                            window.updateView(); 
+                        }, err => console.error("Snapshot Error:", err)); 
+                        
+                        getSettingsRef().onSnapshot(doc => { 
+                            if(doc.exists) { 
+                                masterData = doc.data(); 
+                                window.renderDropdowns(); 
+                                if(currentView === 'setting') window.renderSettings(); 
+                            } else { 
+                                initializeDatabase(false); 
+                            } 
+                        }, err => console.error("Settings Error:", err)); 
+                    } 
+                }); 
+            } catch (e) { 
+                console.error("Auth Error:", e); 
+                Swal.fire('Connection Error', e.message, 'error'); 
+            } 
+        }
         
         $(document).ready(function() { 
             $('.select2').select2({ placeholder: "เลือกชื่อ", allowClear: true }); 
@@ -2176,4 +2296,3 @@
     </script>
 </body>
 </html>
-
