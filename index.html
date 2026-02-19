@@ -1523,7 +1523,7 @@
                 // Custom columns for Summary Plan Job List
                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Project Code</th><th class="${thClass}">Route Name</th><th class="${thClass}">Distance</th><th class="${thClass}">Due Date</th><th class="${thClass}">Sym Impact</th><th class="${thClass}">Progress</th><th class="${thClass}">NS</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isSub) {
-                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
+			   cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">asNumber</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isPlan) {
                  cols += `<th class="${thClass}">Interruption Type</th><th class="${thClass}">Project</th><th class="${thClass}">Desc</th><th class="${thClass}">Agency</th><th class="${thClass}">Sent Plan Date</th><th class="${thClass}">Action Date</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">NS</th><th class="${thClass}">Item</th><th class="${thClass}">Action</th>`;
             } else {
@@ -1572,7 +1572,7 @@
                         rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
                         rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]">${item.routeCode||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]" title="${item.asNumber||''}">${item.asNumber||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs" title="${item.expenses||''}">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.routeCode||''}">${item.routeCode||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
                         if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
                         rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
@@ -2296,3 +2296,4 @@
     </script>
 </body>
 </html>
+
