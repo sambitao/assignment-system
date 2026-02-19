@@ -1558,7 +1558,7 @@
 
                         rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
                                     <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
-                                    <td class="p-3 text-xs truncate max-w-[400px]">${item.routeName||'-'}</td>
+                                    <td class="p-3 text-xs truncate max-w-[400px]" title="${item.routeName||''}" >${item.routeName||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
                                     <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
                                     <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
@@ -1567,16 +1567,16 @@
                                     <td class="p-3 text-center">${badge}</td>`;
                     
                     } else if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 whitespace-normal">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 max-w-[400px] whitespace-normal break-words align-top">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
                         const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
-                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 max-w-[180px] whitespace-normal break-words align-top">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 max-w-[150px] whitespace-normal break-words align-top">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
-                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]" title="${item.asNumber||''}">${item.asNumber||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs" title="${item.expenses||''}">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.routeCode||''}">${item.routeCode||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 min-w-[300px] whitespace-normal break-words align-top" title="${item.description||''}">${item.description||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs max-w-[100px]">${item.asNumber||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]"title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px] whitespace-normal break-words align-top">${item.routeCode||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
                         if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
-                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>`;
-                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs">${item.location||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-blue-600 font-medium whitespace-normal break-words align-top max-w-[100px] ">${sub}</td><td class="p-3 truncate max-w-[100px] whitespace-normal break-words align-top ">${extractNS(item.nsRespond).names}</td>`;
+                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 min-w-[100px] whitespace-normal break-words align-top ">${item.location||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center">${badge}</td>`;
                     }
                     
@@ -2296,4 +2296,5 @@
     </script>
 </body>
 </html>
+
 
