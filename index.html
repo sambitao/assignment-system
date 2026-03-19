@@ -755,7 +755,7 @@
         }
         
         const GAS_URL = "https://script.google.com/macros/s/AKfycbx5KFStUdu_gJ-FmB99YluYydM6ObImyUqrF2vGh6DO1gCAK5JWIxz5AGG40B_iViiULQ/exec";
-		
+
         let assignments = [];
         let masterData = {};
         let currentView = 'calendar';
@@ -1521,13 +1521,13 @@
             const th = document.getElementById("table-header-row");
             const config = menuConfig[currentCategoryFilter];
             const thClass = "p-3 text-center align-middle whitespace-normal break-words font-semibold text-gray-700 bg-gray-50 border-b border-gray-200 min-w-[80px]";
-            let cols = `<th class="${thClass}">Job ID</th>`;
+            let cols = `<th class="${thClass}">Job ID</th>`;;
             
             if (currentCategoryFilter === 'summary_plan') {
                 // Custom columns for Summary Plan Job List
                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Project Code</th><th class="${thClass}">Route Name</th><th class="${thClass}">Distance</th><th class="${thClass}">Due Date</th><th class="${thClass}">Sym Impact</th><th class="${thClass}">Progress</th><th class="${thClass}">NS</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isSub) {
-                 cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">asNumber</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
+			   cols += `<th class="${thClass}">Job Type</th><th class="${thClass}">Desc</th><th class="${thClass}">asNumber</th><th class="${thClass}">Objective</th><th class="${thClass}">Expenses</th><th class="${thClass}">Route Code</th><th class="${thClass}">Action Date</th><th class="${thClass}">Subcontractor</th><th class="${thClass}">NS</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">Action</th>`;
             } else if (config && config.isPlan) {
                  cols += `<th class="${thClass}">Interruption Type</th><th class="${thClass}">Project</th><th class="${thClass}">Desc</th><th class="${thClass}">Agency</th><th class="${thClass}">Sent Plan Date</th><th class="${thClass}">Action Date</th><th class="${thClass}">Location</th><th class="${thClass}">Status</th><th class="${thClass}">NS</th><th class="${thClass}">Item</th><th class="${thClass}">Action</th>`;
             } else {
@@ -1568,27 +1568,27 @@
                             ? `<div class="w-full bg-gray-200 rounded-full h-2.5 mb-1 cursor-pointer" onclick="updateProgressSummary('${item.id}')" title="Click to update"><div class="${progressColor} h-2.5 rounded-full" style="width: ${progressVal}%"></div></div><div class="text-[10px] text-center font-bold text-gray-600 cursor-pointer" onclick="updateProgressSummary('${item.id}')">${progressVal}% <i class="fa-solid fa-pen ml-1 text-gray-400 hover:text-brand-500"></i></div>` 
                             : `<div class="text-center font-bold text-gray-500 text-xs">${progressVal}%</div>`;
 
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td>
-                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold" title="${item.projectCode||''}">${item.projectCode||'-'}</td>
-                                    <td class="p-3 text-xs truncate max-w-[400px]" title="${item.routeName||''}">${item.routeName||'-'}</td>
-                                    <td class="p-3 text-center text-xs" title="${item.distance||''}">${item.distance||'-'}</td>
-                                    <td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
-                                    <td class="p-3 text-center text-xs text-orange-600 font-medium" title="${item.symImpact||''}">${item.symImpact||'-'}</td>
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td>
+                                    <td class="p-3 text-center text-xs text-blue-500 truncate max-w-[150px] font-bold">${item.projectCode||'-'}</td>
+                                    <td class="p-3 text-xs truncate max-w-[400px]" title="${item.routeName||''}" >${item.routeName||'-'}</td>
+                                    <td class="p-3 text-center text-xs">${item.distance||'-'}</td>
+                                    <td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>
+                                    <td class="p-3 text-center text-xs text-orange-600 font-medium">${item.symImpact||'-'}</td>
                                     <td class="p-3 w-24 align-middle">${progressHtml}</td>
-                                    <td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>
+                                    <td class="p-3 truncate max-w-[100px] text-xs">${extractNS(item.nsRespond).names}</td>
                                     <td class="p-3 text-center">${badge}</td>`;
                     
                     } else if (config && config.isPlan) {
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 text-xs" title="${item.project||''}">${item.project||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td><td class="p-3 text-xs" title="${item.agency||''}">${item.agency||'-'}</td><td class="p-3 text-center text-xs" title="${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : ''}">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 whitespace-normal">${item.jobType||'-'}</td><td class="p-3 text-xs">${item.project||'-'}</td><td class="p-3 max-w-[400px] whitespace-normal break-words align-top">${item.description||'-'}</td><td class="p-3 text-xs">${item.agency||'-'}</td><td class="p-3 text-center text-xs">${item.sentPlanDate ? fmtDate(item.sentPlanDate, true) : '-'}</td>`;
                         const actionTime = (item.planStartTime && item.planEndTime) ? `<br><span class="text-gray-400">${item.planStartTime}-${item.planEndTime}</span>` : '';
-                        rowHtml += `<td class="p-3 text-center text-xs" title="${item.planDate ? fmtDate(item.planDate, true) + (item.planStartTime ? ' ' + item.planStartTime + '-' + item.planEndTime : '') : ''}">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs">${item.planDate ? fmtDate(item.planDate, true) + actionTime : '-'}</td><td class="p-3 max-w-[180px] whitespace-normal break-words align-top">${item.location||'-'}</td><td class="p-3 text-center">${badge}</td><td class="p-3 max-w-[150px] whitespace-normal break-words align-top">${extractNS(item.nsRespond).names}</td><td class="p-3 text-center text-xs">${item.itemCount||'0'}</td>`;
                     } else {
-                        rowHtml += `<td class="p-3 text-xs" title="${item.jobType||''}">${item.jobType||'-'}</td><td class="p-3 truncate max-w-[400px]" title="${item.description||''}">${item.description||'-'}</td>`;
-                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs truncate max-w-[100px]" title="${item.asNumber||''}">${item.asNumber||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs" title="${item.expenses||''}">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]" title="${item.routeCode||''}">${item.routeCode||'-'}</td>`;
-                        rowHtml += `<td class="p-3 text-center text-xs" title="${fmtDate(item.actionDate)}">${fmtDate(item.actionDate)}</td>`;
-                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs" title="${item.dueDate ? fmtDate(item.dueDate, true) : ''}">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
-                        rowHtml += `<td class="p-3 text-blue-600 font-medium text-xs" title="${sub}">${sub}</td><td class="p-3 truncate max-w-[100px] text-xs" title="${nsNames}">${nsNames}</td>`;
-                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 truncate max-w-[100px] text-xs" title="${item.location||''}">${item.location||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-xs">${item.jobType||'-'}</td><td class="p-3 min-w-[300px] whitespace-normal break-words align-top" title="${item.description||''}">${item.description||'-'}</td>`;
+                        if (config && config.isSub) rowHtml += `<td class="p-3 text-xs max-w-[100px]">${item.asNumber||'-'}</td><td class="p-3 text-xs truncate max-w-[100px]"title="${item.objective||''}">${item.objective||'-'}</td><td class="p-3 text-xs">${item.expenses||'-'}</td><td class="p-3 text-xs truncate max-w-[100px] whitespace-normal break-words align-top">${item.routeCode||'-'}</td>`;
+                        rowHtml += `<td class="p-3 text-center text-xs">${fmtDate(item.actionDate)}</td>`;
+                        if(config && !config.isSub) rowHtml += `<td class="p-3 text-center text-xs">${item.dueDate ? fmtDate(item.dueDate, true) : '-'}</td>`;
+                        rowHtml += `<td class="p-3 text-blue-600 font-medium whitespace-normal break-words align-top max-w-[100px] ">${sub}</td><td class="p-3 truncate max-w-[100px] whitespace-normal break-words align-top ">${extractNS(item.nsRespond).names}</td>`;
+                        if (!(config && config.isPlan)) rowHtml += `<td class="p-3 min-w-[100px] whitespace-normal break-words align-top ">${item.location||'-'}</td>`;
                         rowHtml += `<td class="p-3 text-center">${badge}</td>`;
                     }
                     
@@ -1852,7 +1852,7 @@
                     }
 
                     if (targetCat === 'summary_plan') {
-                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.distance); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); 
+                        $('#form-route-code').val(item.routeCode); $('#form-electric-district').val(item.electricDistrict); $('#form-route-name').val(item.routeName); $('#form-side-count').val(item.sideCount); $('#form-gps-start').val(item.gpsStart); $('#form-gps-end').val(item.gpsEnd); $('#form-distance').val(item.distance); $('#form-owner').val(item.owner); $('#form-cross-req').val(item.crossReq); $('#form-due-date-summary').val(item.dueDate); 
                         
                         const impactVal = item.symImpact;
                         if(impactVal && impactVal !== 'Impact' && impactVal !== 'Non Impact' && impactVal !== 'Other' && impactVal.trim() !== '') {
@@ -2195,7 +2195,7 @@
             dReceive.setDate(dReceive.getDate() - 2);
             const dateReceiveStr = formatDateTH(dReceive);
 
-            const text = `1.ลักษณะงาน : ${item.jobType || '-'}\n2.หน่วยงานที่แจ้ง : ${item.agency || '-'}\n3.สถานที่ : ${item.location || '-'}\n4.จำนวนเสา : ${item.objective || '-'}\n5.วันที่รับแจ้ง : ${dateReceiveStr}\n6.วันที่แจ้ง ผรม. : ${dateInformStr}\n7.วันที่เข้าดำเนินการ : ${dateActionStr}\n8.ระยะเวลาดำเนินการ : 1 วัน`;
+            const text = `1.ลักษณะงาน : ${item.jobType || '-'}\n2.หน่วยงานที่แจ้ง : ${item.agency || '-'}\n3.สถานที่ : ${item.location || '-'}\n4.จำนวนเสา : ${item.objective || '-'}\n5.วันที่รับแจ้ง : ${dateReceiveStr}\n6.วันที่แจ้ง ผรม. : ${dateInformStr}\n7.วันที่เข้าดำเนินการ : ${dateActionStr}\n8.ระยะเวลาดำเนินการ : 1 วัน \n9.Code Route : ${item.routeCode}\n10.GPS : ${item.gps}`;
             
             // เปลี่ยนเป็นแสดง Popup เพื่อให้ผู้ใช้ดูข้อมูลก่อนแล้วค่อยกด Copy
             Swal.fire({
@@ -2213,7 +2213,7 @@
             });
         };
         // --------------------------------------------------
-
+		
         // NEW: Function to update sidebar notification badges
         window.updateSidebarBadges = function() {
             // Categories to track
@@ -2247,7 +2247,7 @@
             if(sumPlan > 0) badgeSumPlan.text(sumPlan).removeClass('hidden'); 
             else badgeSumPlan.addClass('hidden');
 
-            // 2. Subcontract Parent
+            // 2. Subcontractor Parent
             const sumSub = counts['sub_preventive'] + counts['sub_reroute'] + counts['sub_reconfigure'];
             const badgeSub = $('#badge-parent-sub');
             if(sumSub > 0) badgeSub.text(sumSub).removeClass('hidden'); 
@@ -2296,7 +2296,7 @@
             $('.select2').select2({ placeholder: "เลือกชื่อ", allowClear: true }); 
             $('#search-input').on('input', function() { currentPage = 1; renderTable(); }); 
             $('#filter-status').on('change', function() { currentPage = 1; renderTable(); }); 
-            $('#filter-duedate-month').on('change', function() { currentPage = 1; renderTable(); }); 
+			$('#filter-duedate-month').on('change', function() { currentPage = 1; renderTable(); }); 
             initAuth(); 
             $('#form-file').change(function(e) { $('#file-name-display').text(e.target.files[0] ? e.target.files[0].name : 'Click to upload'); }); 
             document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar); 
@@ -2360,3 +2360,4 @@
     </script>
 </body>
 </html>
+
